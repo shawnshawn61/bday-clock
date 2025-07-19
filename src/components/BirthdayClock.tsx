@@ -98,7 +98,7 @@ export const BirthdayClock = () => {
             </div>
             
             {/* Portrait Photo - Always present for consistent layout */}
-            <div className="flex-shrink-0">
+            <div className="flex-shrink-0 relative">
               <div className="w-32 md:w-48 aspect-[3/4] rounded-xl overflow-hidden border-4 border-photo-frame shadow-lg">
                 {currentTimeIsValidDate && matchingBirthdays.length > 0 ? (
                   matchingBirthdays[0].photo ? (
@@ -132,6 +132,11 @@ export const BirthdayClock = () => {
                     </div>
                   </div>
                 )}
+              </div>
+              
+              {/* Countdown counter */}
+              <div className="absolute -bottom-2 -right-2 text-xs text-muted-foreground/60 font-mono">
+                {remainingDates}
               </div>
               
               {/* Birthday info below photo - only when there's a match */}
