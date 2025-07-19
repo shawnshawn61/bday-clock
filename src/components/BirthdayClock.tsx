@@ -14,6 +14,7 @@ export interface Birthday {
   name: string;
   date: string; // MM-DD format
   photo?: string;
+  imdb?: string;
 }
 
 export const BirthdayClock = () => {
@@ -227,7 +228,18 @@ export const BirthdayClock = () => {
               {currentTimeIsValidDate && matchingBirthdays.length > 0 && !shouldShowGift && (
                 <div className="text-center mt-3">
                   <div className="text-lg font-semibold text-foreground">
-                    {matchingBirthdays[0].name}
+                    {celebrityMode && matchingBirthdays[0].imdb ? (
+                      <a 
+                        href={matchingBirthdays[0].imdb}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-foreground hover:text-primary transition-colors underline decoration-dotted underline-offset-2"
+                      >
+                        {matchingBirthdays[0].name}
+                      </a>
+                    ) : (
+                      matchingBirthdays[0].name
+                    )}
                   </div>
                   <div className="text-sm text-muted-foreground">
                     🎉 It's {matchingBirthdays[0].name.split(' ')[0]} o'clock! 🎂
@@ -308,7 +320,20 @@ export const BirthdayClock = () => {
                     </div>
                   )}
                   <div className="flex-1">
-                    <div className="font-medium text-foreground">{birthday.name}</div>
+                    <div className="font-medium text-foreground">
+                      {celebrityMode && birthday.imdb ? (
+                        <a 
+                          href={birthday.imdb}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-foreground hover:text-primary transition-colors underline decoration-dotted underline-offset-2"
+                        >
+                          {birthday.name}
+                        </a>
+                      ) : (
+                        birthday.name
+                      )}
+                    </div>
                     <div className="text-sm text-muted-foreground">
                       {birthday.date.replace('-', '/')} (time: {birthday.date.split('-')[0]}:{birthday.date.split('-')[1]})
                     </div>
