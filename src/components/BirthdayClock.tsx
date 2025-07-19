@@ -117,11 +117,11 @@ export const BirthdayClock = () => {
               </div>
             </div>
             
-            {/* Portrait Photo - Right next to time */}
-            {currentTimeIsValidDate && matchingBirthdays.length > 0 && (
-              <div className="flex-shrink-0">
-                <div className="w-32 md:w-48 aspect-[3/4] rounded-xl overflow-hidden border-4 border-photo-frame shadow-lg">
-                  {matchingBirthdays[0].photo ? (
+            {/* Portrait Photo - Always present for consistent layout */}
+            <div className="flex-shrink-0">
+              <div className="w-32 md:w-48 aspect-[3/4] rounded-xl overflow-hidden border-4 border-photo-frame shadow-lg">
+                {currentTimeIsValidDate && matchingBirthdays.length > 0 ? (
+                  matchingBirthdays[0].photo ? (
                     <img
                       src={matchingBirthdays[0].photo}
                       alt={matchingBirthdays[0].name}
@@ -131,8 +131,19 @@ export const BirthdayClock = () => {
                     <div className="w-full h-full bg-gradient-to-br from-celebration to-celebration/70 flex items-center justify-center text-4xl md:text-6xl text-white font-bold">
                       {matchingBirthdays[0].name.charAt(0).toUpperCase()}
                     </div>
-                  )}
-                </div>
+                  )
+                ) : (
+                  <div className="w-full h-full bg-gradient-to-br from-primary/20 to-secondary/30 flex items-center justify-center">
+                    <div className="text-center text-muted-foreground/50">
+                      <div className="text-3xl md:text-5xl mb-2">🎂</div>
+                      <div className="text-xs md:text-sm font-medium">Birthday<br/>Clock</div>
+                    </div>
+                  </div>
+                )}
+              </div>
+              
+              {/* Birthday info below photo - only when there's a match */}
+              {currentTimeIsValidDate && matchingBirthdays.length > 0 && (
                 <div className="text-center mt-3">
                   <div className="text-lg font-semibold text-foreground">
                     {matchingBirthdays[0].name}
@@ -141,8 +152,8 @@ export const BirthdayClock = () => {
                     🎉 It's {matchingBirthdays[0].name.split(' ')[0]} o'clock! 🎂
                   </div>
                 </div>
-              </div>
-            )}
+              )}
+            </div>
           </div>
 
           {/* Additional Info Below */}
