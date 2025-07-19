@@ -1,9 +1,12 @@
 import { useState, useEffect } from 'react';
 import { format } from 'date-fns';
 import { Card } from '@/components/ui/card';
+import { Switch } from '@/components/ui/switch';
+import { Label } from '@/components/ui/label';
 import { BirthdayForm } from './BirthdayForm';
 import { BirthdayDisplay } from './BirthdayDisplay';
 import { useBirthdayStorage } from '@/hooks/useBirthdayStorage';
+import { celebrityBirthdays } from '@/data/celebrities';
 
 export interface Birthday {
   id: string;
@@ -14,6 +17,7 @@ export interface Birthday {
 
 export const BirthdayClock = () => {
   const [currentTime, setCurrentTime] = useState(new Date());
+  const [celebrityMode, setCelebrityMode] = useState(false);
   const { birthdays, addBirthday, removeBirthday } = useBirthdayStorage();
 
   useEffect(() => {
@@ -31,8 +35,11 @@ export const BirthdayClock = () => {
   // Convert time to date format (HH:MM -> MM-DD)
   const timeAsDate = `${minutes.toString().padStart(2, '0')}-${hours.toString().padStart(2, '0')}`;
   
+  // Get the appropriate birthday list based on mode
+  const activeBirthdays = celebrityMode ? celebrityBirthdays : birthdays;
+  
   // Find birthdays that match current time
-  const matchingBirthdays = birthdays.filter(birthday => {
+  const matchingBirthdays = activeBirthdays.filter(birthday => {
     const [month, day] = birthday.date.split('-');
     const birthdayTimeFormat = `${month}-${day}`;
     return birthdayTimeFormat === timeAsDate;
@@ -51,6 +58,27 @@ export const BirthdayClock = () => {
           </p>
         </div>
 
+        {/* Celebrity Mode Toggle */}
+        <Card className="p-6 bg-card/80 backdrop-blur-sm border-photo-frame">
+          <div className="flex items-center justify-center gap-4">
+            <Label htmlFor="celebrity-mode" className="text-lg font-medium text-foreground">
+              {celebrityMode ? '⭐ Celebrity Mode' : '👥 Personal Mode'}
+            </Label>
+            <Switch
+              id="celebrity-mode"
+              checked={celebrityMode}
+              onCheckedChange={setCelebrityMode}
+              className="data-[state=checked]:bg-celebration"
+            />
+          </div>
+          <p className="text-center text-sm text-muted-foreground mt-2">
+            {celebrityMode 
+              ? 'Showing famous celebrities when time matches their birth dates'
+              : 'Showing your personal contacts and their birthdays'
+            }
+          </p>
+        </Card>
+
         {/* Digital Clock */}
         <Card className="p-8 md:p-12 text-center bg-card/80 backdrop-blur-sm border-photo-frame">
           <div className="space-y-4">
@@ -61,7 +89,7 @@ export const BirthdayClock = () => {
               {format(currentTime, 'EEEE, MMMM do, yyyy')}
             </div>
             <div className="text-sm text-muted-foreground">
-              Showing birthdays for {minutes}/{hours} (Month/Day)
+              Showing {celebrityMode ? 'celebrity' : 'personal'} birthdays for {minutes}/{hours} (Month/Day)
             </div>
           </div>
         </Card>
@@ -71,17 +99,17 @@ export const BirthdayClock = () => {
           <BirthdayDisplay birthdays={matchingBirthdays} />
         )}
 
-        {/* Birthday Form */}
-        <BirthdayForm onAddBirthday={addBirthday} />
+        {/* Birthday Form - Only show in personal mode */}
+        {!celebrityMode && <BirthdayForm onAddBirthday={addBirthday} />}
 
         {/* All Birthdays List */}
-        {birthdays.length > 0 && (
+        {activeBirthdays.length > 0 && (
           <Card className="p-6 bg-card/80 backdrop-blur-sm border-photo-frame">
             <h3 className="text-xl font-semibold mb-4 text-foreground">
-              All Birthdays ({birthdays.length})
+              {celebrityMode ? 'Celebrity Birthdays' : 'All Birthdays'} ({activeBirthdays.length})
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {birthdays.map((birthday) => (
+              {activeBirthdays.map((birthday) => (
                 <div
                   key={birthday.id}
                   className="flex items-center gap-3 p-3 rounded-lg bg-secondary/50 border border-border"
@@ -103,13 +131,15 @@ export const BirthdayClock = () => {
                       {birthday.date.replace('-', '/')} ({birthday.date.split('-')[0]}:{birthday.date.split('-')[1]})
                     </div>
                   </div>
-                  <button
-                    onClick={() => removeBirthday(birthday.id)}
-                    className="text-muted-foreground hover:text-destructive transition-colors p-1"
-                    title="Remove birthday"
-                  >
-                    ×
-                  </button>
+                  {!celebrityMode && (
+                    <button
+                      onClick={() => removeBirthday(birthday.id)}
+                      className="text-muted-foreground hover:text-destructive transition-colors p-1"
+                      title="Remove birthday"
+                    >
+                      ×
+                    </button>
+                  )}
                 </div>
               ))}
             </div>
