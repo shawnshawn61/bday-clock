@@ -28,9 +28,9 @@ export const BirthdayClock = () => {
     return () => clearInterval(timer);
   }, []);
 
-  // Format current time as MM:DD to match with birthdays
-  const currentTimeString = format(currentTime, 'HH:mm');
-  const [hours, minutes] = currentTimeString.split(':').map(Number);
+  // Format current time as 12-hour format
+  const currentTimeString = format(currentTime, 'h:mm a');
+  const [hours, minutes] = format(currentTime, 'HH:mm').split(':').map(Number);
   
   // Convert time to date format (HH:MM -> MM-DD)
   const timeAsDate = `${minutes.toString().padStart(2, '0')}-${hours.toString().padStart(2, '0')}`;
@@ -89,7 +89,7 @@ export const BirthdayClock = () => {
               {format(currentTime, 'EEEE, MMMM do, yyyy')}
             </div>
             <div className="text-sm text-muted-foreground">
-              Showing {celebrityMode ? 'celebrity' : 'personal'} birthdays for {minutes}/{hours} (Month/Day)
+              Showing {celebrityMode ? 'celebrity' : 'personal'} birthdays for {minutes.toString().padStart(2, '0')}/{hours.toString().padStart(2, '0')} (Month/Day)
             </div>
           </div>
         </Card>
@@ -128,7 +128,7 @@ export const BirthdayClock = () => {
                   <div className="flex-1">
                     <div className="font-medium text-foreground">{birthday.name}</div>
                     <div className="text-sm text-muted-foreground">
-                      {birthday.date.replace('-', '/')} ({birthday.date.split('-')[0]}:{birthday.date.split('-')[1]})
+                      {birthday.date.replace('-', '/')} (time: {birthday.date.split('-')[0]}:{birthday.date.split('-')[1]})
                     </div>
                   </div>
                   {!celebrityMode && (
@@ -152,8 +152,8 @@ export const BirthdayClock = () => {
             How it works
           </h3>
           <div className="space-y-2 text-muted-foreground">
-            <p>• The time format HH:MM maps to birthdays on MM/DD</p>
-            <p>• For example: 2:02 PM shows people born on February 2nd</p>
+            <p>• The time format maps to birthdays: minutes become month, hours become day</p>
+            <p>• For example: 2:02 PM shows people born on February 2nd (02/02)</p>
             <p>• Add birthdays manually using the form above</p>
             <p>• Photos will appear with celebration effects when birthdays match the current time</p>
           </div>
