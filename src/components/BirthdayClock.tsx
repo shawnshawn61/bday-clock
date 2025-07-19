@@ -103,27 +103,24 @@ export const BirthdayClock = () => {
 
         {/* Digital Clock */}
         <Card className="p-6 md:p-8 bg-card/80 backdrop-blur-sm border-photo-frame">
-          <div className="flex flex-col lg:flex-row items-center gap-8">
-            {/* Time Display */}
-            <div className="flex-1 text-center lg:text-left space-y-3">
-              <div className="text-7xl md:text-9xl font-mono font-bold text-celebration animate-clock-pulse leading-none">
-                {currentTimeString}
-              </div>
-              <div className="text-lg text-muted-foreground">
-                {format(currentTime, 'EEEE, MMMM do, yyyy')}
-              </div>
-              <div className="text-sm text-muted-foreground">
-                Showing {celebrityMode ? 'celebrity' : 'personal'} birthdays for {hours.toString().padStart(2, '0')}/{minutes.toString().padStart(2, '0')} (Month/Day)
-              </div>
-              <div className="text-xs text-muted-foreground mt-2">
-                📊 {filledDates} of {totalValidDates} dates filled • {remainingDates} remaining
+          {/* Clock and Photo Unit */}
+          <div className="flex items-center justify-center gap-8 mb-6">
+            {/* Large Time Display */}
+            <div className="text-center">
+              <div className="flex items-baseline gap-2">
+                <span className="text-8xl md:text-[12rem] font-mono font-bold text-celebration animate-clock-pulse leading-none">
+                  {format(currentTime, 'h:mm')}
+                </span>
+                <span className="text-2xl md:text-3xl font-mono text-muted-foreground self-end mb-2 md:mb-4">
+                  {format(currentTime, 'a')}
+                </span>
               </div>
             </div>
             
-            {/* Portrait Photo Display - Only show when there are matching birthdays */}
+            {/* Portrait Photo - Right next to time */}
             {currentTimeIsValidDate && matchingBirthdays.length > 0 && (
-              <div className="w-48 lg:w-64 flex-shrink-0">
-                <div className="aspect-[3/4] rounded-xl overflow-hidden border-4 border-photo-frame shadow-lg">
+              <div className="flex-shrink-0">
+                <div className="w-32 md:w-48 aspect-[3/4] rounded-xl overflow-hidden border-4 border-photo-frame shadow-lg">
                   {matchingBirthdays[0].photo ? (
                     <img
                       src={matchingBirthdays[0].photo}
@@ -131,7 +128,7 @@ export const BirthdayClock = () => {
                       className="w-full h-full object-cover"
                     />
                   ) : (
-                    <div className="w-full h-full bg-gradient-to-br from-celebration to-celebration/70 flex items-center justify-center text-6xl text-white font-bold">
+                    <div className="w-full h-full bg-gradient-to-br from-celebration to-celebration/70 flex items-center justify-center text-4xl md:text-6xl text-white font-bold">
                       {matchingBirthdays[0].name.charAt(0).toUpperCase()}
                     </div>
                   )}
@@ -146,6 +143,19 @@ export const BirthdayClock = () => {
                 </div>
               </div>
             )}
+          </div>
+
+          {/* Additional Info Below */}
+          <div className="text-center space-y-2">
+            <div className="text-lg text-muted-foreground">
+              {format(currentTime, 'EEEE, MMMM do, yyyy')}
+            </div>
+            <div className="text-sm text-muted-foreground">
+              Showing {celebrityMode ? 'celebrity' : 'personal'} birthdays for {hours.toString().padStart(2, '0')}/{minutes.toString().padStart(2, '0')} (Month/Day)
+            </div>
+            <div className="text-xs text-muted-foreground">
+              📊 {filledDates} of {totalValidDates} dates filled • {remainingDates} remaining
+            </div>
           </div>
         </Card>
 
