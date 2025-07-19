@@ -52,6 +52,10 @@ export const BirthdayDisplay = ({ birthdays }: BirthdayDisplayProps) => {
                 Birthday: {birthday.date.replace('-', '/')}
               </div>
               
+              <div className="text-white font-bold text-lg mt-2 animate-pulse">
+                It's {birthday.name.split(' ')[0]} o'clock! ⏰
+              </div>
+              
               <div className="mt-4 text-2xl">
                 🎂✨🎊
               </div>
