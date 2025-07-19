@@ -269,13 +269,15 @@ export const BirthdayClock = () => {
         {/* Instructions */}
         <Card className="p-6 bg-card/60 backdrop-blur-sm border-photo-frame">
           <h3 className="text-lg font-semibold mb-3 text-foreground">
-            How it works
+            How it works:
           </h3>
             <div className="space-y-2 text-muted-foreground">
-              <p>• The time format maps to birthdays: hours become month, minutes become day</p>
-              <p>• For example: 2:02 PM shows people born on February 2nd (02/02)</p>
-            <p>• Add birthdays manually using the form above</p>
-            <p>• Photos will appear with celebration effects when birthdays match the current time</p>
+              <p>• Every birthday maps to a time. (Feb 2 = 2:02, etc.)</p>
+              <p>•  When the clock hits their day, their photo pops up.</p>
+              <p>•  Twice a day. Every day.</p>
+              <p>•  Add friends, family—even celebs.</p>
+              <p>Fill the clock with faces you love.</p>
+              <p>•  Bonus: You'll know every birthday by heart. In no time.</p>
           </div>
         </Card>
       </div>
