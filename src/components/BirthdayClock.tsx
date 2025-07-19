@@ -19,7 +19,7 @@ export interface Birthday {
 export const BirthdayClock = () => {
   const [currentTime, setCurrentTime] = useState(new Date());
   const [celebrityMode, setCelebrityMode] = useState(false);
-  const [useQuickEntry, setUseQuickEntry] = useState(true);
+  const [useQuickEntry, setUseQuickEntry] = useState(false);
   const { birthdays, addBirthday, removeBirthday } = useBirthdayStorage();
 
   useEffect(() => {
@@ -102,47 +102,76 @@ export const BirthdayClock = () => {
         </Card>
 
         {/* Digital Clock */}
-        <Card className="p-8 md:p-12 text-center bg-card/80 backdrop-blur-sm border-photo-frame">
-          <div className="space-y-4">
-            <div className="text-6xl md:text-8xl font-mono font-bold text-celebration animate-clock-pulse">
-              {currentTimeString}
+        <Card className="p-6 md:p-8 bg-card/80 backdrop-blur-sm border-photo-frame">
+          <div className="flex flex-col lg:flex-row items-center gap-8">
+            {/* Time Display */}
+            <div className="flex-1 text-center lg:text-left space-y-3">
+              <div className="text-7xl md:text-9xl font-mono font-bold text-celebration animate-clock-pulse leading-none">
+                {currentTimeString}
+              </div>
+              <div className="text-lg text-muted-foreground">
+                {format(currentTime, 'EEEE, MMMM do, yyyy')}
+              </div>
+              <div className="text-sm text-muted-foreground">
+                Showing {celebrityMode ? 'celebrity' : 'personal'} birthdays for {hours.toString().padStart(2, '0')}/{minutes.toString().padStart(2, '0')} (Month/Day)
+              </div>
+              <div className="text-xs text-muted-foreground mt-2">
+                📊 {filledDates} of {totalValidDates} dates filled • {remainingDates} remaining
+              </div>
             </div>
-            <div className="text-lg text-muted-foreground">
-              {format(currentTime, 'EEEE, MMMM do, yyyy')}
-            </div>
-            <div className="text-sm text-muted-foreground">
-              Showing {celebrityMode ? 'celebrity' : 'personal'} birthdays for {hours.toString().padStart(2, '0')}/{minutes.toString().padStart(2, '0')} (Month/Day)
-            </div>
-            <div className="text-xs text-muted-foreground mt-2">
-              📊 {filledDates} of {totalValidDates} dates filled • {remainingDates} remaining
-            </div>
+            
+            {/* Portrait Photo Display - Only show when there are matching birthdays */}
+            {currentTimeIsValidDate && matchingBirthdays.length > 0 && (
+              <div className="w-48 lg:w-64 flex-shrink-0">
+                <div className="aspect-[3/4] rounded-xl overflow-hidden border-4 border-photo-frame shadow-lg">
+                  {matchingBirthdays[0].photo ? (
+                    <img
+                      src={matchingBirthdays[0].photo}
+                      alt={matchingBirthdays[0].name}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <div className="w-full h-full bg-gradient-to-br from-celebration to-celebration/70 flex items-center justify-center text-6xl text-white font-bold">
+                      {matchingBirthdays[0].name.charAt(0).toUpperCase()}
+                    </div>
+                  )}
+                </div>
+                <div className="text-center mt-3">
+                  <div className="text-lg font-semibold text-foreground">
+                    {matchingBirthdays[0].name}
+                  </div>
+                  <div className="text-sm text-muted-foreground">
+                    🎉 It's {matchingBirthdays[0].name.split(' ')[0]} o'clock! 🎂
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         </Card>
 
-        {/* Birthday Display or TBD */}
-        {currentTimeIsValidDate && (
-          <>
-            {matchingBirthdays.length > 0 ? (
-              <BirthdayDisplay birthdays={matchingBirthdays} />
-            ) : (
-              <Card className="p-8 bg-card/60 backdrop-blur-sm border-dashed border-2 border-muted-foreground/30">
-                <div className="text-center space-y-4">
-                  <div className="w-24 h-24 mx-auto rounded-full bg-muted/50 flex items-center justify-center text-4xl border-2 border-dashed border-muted-foreground/30">
-                    ❓
-                  </div>
-                  <h3 className="text-xl font-semibold text-muted-foreground">
-                    {hours.toString().padStart(2, '0')}/{minutes.toString().padStart(2, '0')} - TBD
-                  </h3>
-                  <p className="text-muted-foreground text-sm">
-                    No birthday assigned to this time yet
-                  </p>
-                  <div className="text-xs text-muted-foreground">
-                    Add someone's birthday for {hours.toString().padStart(2, '0')}/{minutes.toString().padStart(2, '0')} below
-                  </div>
-                </div>
-              </Card>
-            )}
-          </>
+        {/* TBD Display - Only show when no birthdays match */}
+        {currentTimeIsValidDate && matchingBirthdays.length === 0 && (
+          <Card className="p-8 bg-card/60 backdrop-blur-sm border-dashed border-2 border-muted-foreground/30">
+            <div className="text-center space-y-4">
+              <div className="w-24 h-24 mx-auto rounded-full bg-muted/50 flex items-center justify-center text-4xl border-2 border-dashed border-muted-foreground/30">
+                ❓
+              </div>
+              <h3 className="text-xl font-semibold text-muted-foreground">
+                {hours.toString().padStart(2, '0')}/{minutes.toString().padStart(2, '0')} - TBD
+              </h3>
+              <p className="text-muted-foreground text-sm">
+                No birthday assigned to this time yet
+              </p>
+              <div className="text-xs text-muted-foreground">
+                Add someone's birthday for {hours.toString().padStart(2, '0')}/{minutes.toString().padStart(2, '0')} below
+              </div>
+            </div>
+          </Card>
+        )}
+
+        {/* Additional Birthday Celebration Display - Show when multiple birthdays */}
+        {currentTimeIsValidDate && matchingBirthdays.length > 1 && (
+          <BirthdayDisplay birthdays={matchingBirthdays.slice(1)} />
         )}
 
         {!currentTimeIsValidDate && (
