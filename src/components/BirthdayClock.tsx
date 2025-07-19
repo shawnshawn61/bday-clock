@@ -150,25 +150,6 @@ export const BirthdayClock = () => {
 
         </Card>
 
-        {/* TBD Display - Only show when no birthdays match */}
-        {currentTimeIsValidDate && matchingBirthdays.length === 0 && (
-          <Card className="p-8 bg-card/60 backdrop-blur-sm border-dashed border-2 border-muted-foreground/30">
-            <div className="text-center space-y-4">
-              <div className="w-24 h-24 mx-auto rounded-full bg-muted/50 flex items-center justify-center text-4xl border-2 border-dashed border-muted-foreground/30">
-                ❓
-              </div>
-              <h3 className="text-xl font-semibold text-muted-foreground">
-                {hours.toString().padStart(2, '0')}/{minutes.toString().padStart(2, '0')} - TBD
-              </h3>
-              <p className="text-muted-foreground text-sm">
-                No birthday assigned to this time yet
-              </p>
-              <div className="text-xs text-muted-foreground">
-                Add someone's birthday for {hours.toString().padStart(2, '0')}/{minutes.toString().padStart(2, '0')} below
-              </div>
-            </div>
-          </Card>
-        )}
 
         {/* Additional Birthday Celebration Display - Show when multiple birthdays */}
         {currentTimeIsValidDate && matchingBirthdays.length > 1 && (
