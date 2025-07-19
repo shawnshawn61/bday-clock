@@ -20,7 +20,46 @@ export const BirthdayClock = () => {
   const [currentTime, setCurrentTime] = useState(new Date());
   const [celebrityMode, setCelebrityMode] = useState(false);
   const [useQuickEntry, setUseQuickEntry] = useState(false);
+  const [giftMode, setGiftMode] = useState(false);
   const { birthdays, addBirthday, removeBirthday } = useBirthdayStorage();
+
+  // Gift showcase data with curated items
+  const giftShowcase = [
+    {
+      id: 1,
+      image: 'https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=400&h=600&fit=crop',
+      title: 'Artisan Books',
+      description: 'Curated literary gifts',
+      retailer: 'Barnes & Noble',
+      link: 'https://www.barnesandnoble.com/b/gifts'
+    },
+    {
+      id: 2,
+      image: 'https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=400&h=600&fit=crop',
+      title: 'Outdoor Adventure',
+      description: 'Sustainable outdoor gear',
+      retailer: 'Patagonia',
+      link: 'https://www.patagonia.com/shop/gifts'
+    },
+    {
+      id: 3,
+      image: 'https://images.unsplash.com/photo-1617038260897-41a1f14a8ca0?w=400&h=600&fit=crop',
+      title: 'Fine Jewelry',
+      description: 'Timeless elegance',
+      retailer: 'Tiffany & Co.',
+      link: 'https://www.tiffany.com/gifts/'
+    },
+    {
+      id: 4,
+      image: 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=600&fit=crop',
+      title: 'Artisan Crafts',
+      description: 'Handmade treasures',
+      retailer: 'Etsy',
+      link: 'https://www.etsy.com/c/craft-supplies-and-tools'
+    }
+  ];
+
+  const [currentGiftIndex, setCurrentGiftIndex] = useState(0);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -29,6 +68,17 @@ export const BirthdayClock = () => {
 
     return () => clearInterval(timer);
   }, []);
+
+  // Rotate gift showcase every 8 seconds when in gift mode
+  useEffect(() => {
+    if (!giftMode) return;
+    
+    const giftTimer = setInterval(() => {
+      setCurrentGiftIndex(prev => (prev + 1) % giftShowcase.length);
+    }, 8000);
+
+    return () => clearInterval(giftTimer);
+  }, [giftMode, giftShowcase.length]);
 
   // Format current time as 12-hour format
   const currentTimeString = format(currentTime, 'h:mm a');
@@ -67,6 +117,10 @@ export const BirthdayClock = () => {
   const filledDates = new Set(activeBirthdays.map(b => b.date)).size;
   const remainingDates = totalValidDates - filledDates;
 
+  // Show gift showcase for impossible dates or when no birthdays match
+  const shouldShowGift = giftMode && (!currentTimeIsValidDate || matchingBirthdays.length === 0);
+  const currentGift = giftShowcase[currentGiftIndex];
+
   return (
     <div className="min-h-screen bg-gradient-clock p-4 md:p-8">
       <div className="max-w-6xl mx-auto space-y-8">
@@ -100,7 +154,20 @@ export const BirthdayClock = () => {
             {/* Portrait Photo - Always present for consistent layout */}
             <div className="flex-shrink-0 relative">
               <div className="w-32 md:w-48 aspect-[3/4] rounded-xl overflow-hidden border-4 border-photo-frame shadow-lg">
-                {currentTimeIsValidDate && matchingBirthdays.length > 0 ? (
+                {shouldShowGift ? (
+                  <div className="w-full h-full relative group">
+                    <img
+                      src={currentGift.image}
+                      alt={currentGift.title}
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                    <div className="absolute bottom-3 left-3 right-3 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                      <div className="text-sm font-medium truncate">{currentGift.title}</div>
+                      <div className="text-xs opacity-80 truncate">{currentGift.description}</div>
+                    </div>
+                  </div>
+                ) : currentTimeIsValidDate && matchingBirthdays.length > 0 ? (
                   matchingBirthdays[0].photo ? (
                     <img
                       src={matchingBirthdays[0].photo}
@@ -139,8 +206,25 @@ export const BirthdayClock = () => {
                 {remainingDates}
               </div>
               
+              {/* Gift showcase info */}
+              {shouldShowGift && (
+                <div className="text-center mt-3">
+                  <div className="text-lg font-semibold text-foreground mb-1">
+                    {currentGift.title}
+                  </div>
+                  <a 
+                    href={currentGift.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-block text-sm text-primary hover:text-primary/80 transition-colors underline decoration-dotted underline-offset-2"
+                  >
+                    Shop at {currentGift.retailer}
+                  </a>
+                </div>
+              )}
+
               {/* Birthday info below photo - only when there's a match */}
-              {currentTimeIsValidDate && matchingBirthdays.length > 0 && (
+              {currentTimeIsValidDate && matchingBirthdays.length > 0 && !shouldShowGift && (
                 <div className="text-center mt-3">
                   <div className="text-lg font-semibold text-foreground">
                     {matchingBirthdays[0].name}
@@ -259,26 +343,73 @@ export const BirthdayClock = () => {
           </div>
         </Card>
 
-        {/* Celebrity Mode Toggle */}
-        <Card className="p-6 bg-card/80 backdrop-blur-sm border-photo-frame">
-          <div className="flex items-center justify-center gap-4">
-            <Label htmlFor="celebrity-mode" className="text-lg font-medium text-foreground">
-              {celebrityMode ? '⭐ Celebrity Mode' : '👥 Personal Mode'}
-            </Label>
-            <Switch
-              id="celebrity-mode"
-              checked={celebrityMode}
-              onCheckedChange={setCelebrityMode}
-              className="data-[state=checked]:bg-celebration"
-            />
-          </div>
-          <p className="text-center text-sm text-muted-foreground mt-2">
-            {celebrityMode 
-              ? 'Showing famous celebrities when time matches their birth dates'
-              : 'Showing your personal contacts and their birthdays'
-            }
-          </p>
-        </Card>
+        {/* Mode Toggles */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {/* Celebrity Mode Toggle */}
+          <Card className="p-6 bg-card/80 backdrop-blur-sm border-photo-frame">
+            <div className="flex items-center justify-center gap-4">
+              <Label htmlFor="celebrity-mode" className="text-lg font-medium text-foreground">
+                {celebrityMode ? '⭐ Celebrity Mode' : '👥 Personal Mode'}
+              </Label>
+              <Switch
+                id="celebrity-mode"
+                checked={celebrityMode}
+                onCheckedChange={setCelebrityMode}
+                className="data-[state=checked]:bg-celebration"
+              />
+            </div>
+            <p className="text-center text-sm text-muted-foreground mt-2">
+              {celebrityMode 
+                ? 'Showing famous celebrities when time matches their birth dates'
+                : 'Showing your personal contacts and their birthdays'
+              }
+            </p>
+          </Card>
+
+          {/* Gift Showcase Toggle */}
+          <Card className="p-6 bg-card/80 backdrop-blur-sm border-photo-frame">
+            <div className="flex items-center justify-center gap-4">
+              <Label htmlFor="gift-mode" className="text-lg font-medium text-foreground">
+                {giftMode ? '🎁 Gift Gallery' : '🖼️ Gallery Off'}
+              </Label>
+              <Switch
+                id="gift-mode"
+                checked={giftMode}
+                onCheckedChange={setGiftMode}
+                className="data-[state=checked]:bg-primary"
+              />
+            </div>
+            <p className="text-center text-sm text-muted-foreground mt-2">
+              {giftMode 
+                ? 'Showcasing curated gifts from premium retailers'
+                : 'Turn on to see beautiful gift inspiration'
+              }
+            </p>
+          </Card>
+        </div>
+
+        {/* Retailer Partnership Info */}
+        {giftMode && (
+          <Card className="p-6 bg-card/60 backdrop-blur-sm border-photo-frame">
+            <h3 className="text-lg font-semibold mb-3 text-foreground text-center">
+              🏪 Retailers: Purchase Time Slots
+            </h3>
+            <div className="text-center space-y-3">
+              <p className="text-muted-foreground">
+                Transform impossible dates into gift inspiration moments. Partner with us to showcase your curated collections.
+              </p>
+              <div className="flex flex-wrap justify-center gap-2 text-sm">
+                <span className="px-3 py-1 bg-secondary/50 rounded-full">Barnes & Noble</span>
+                <span className="px-3 py-1 bg-secondary/50 rounded-full">Patagonia</span>
+                <span className="px-3 py-1 bg-secondary/50 rounded-full">Tiffany & Co.</span>
+                <span className="px-3 py-1 bg-secondary/50 rounded-full">Etsy</span>
+              </div>
+              <button className="mt-4 px-6 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors font-medium">
+                Retailer Partnership Inquiry
+              </button>
+            </div>
+          </Card>
+        )}
       </div>
     </div>
   );
