@@ -37,6 +37,20 @@ export const BirthdayClock = () => {
   // Convert time to date format (HH:MM -> MM-DD)
   const timeAsDate = `${minutes.toString().padStart(2, '0')}-${hours.toString().padStart(2, '0')}`;
   
+  // Calculate valid date combinations (exclude impossible dates like 02-30, 02-31, etc.)
+  const getValidDateCount = () => {
+    const daysInMonth = [31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]; // Including leap year Feb
+    return daysInMonth.reduce((total, days) => total + days, 0); // 366 total
+  };
+  
+  // Check if current time represents a valid date
+  const isValidDate = (mm: number, dd: number) => {
+    const daysInMonth = [31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+    return mm >= 1 && mm <= 12 && dd >= 1 && dd <= daysInMonth[mm - 1];
+  };
+  
+  const currentTimeIsValidDate = isValidDate(minutes, hours);
+  
   // Get the appropriate birthday list based on mode
   const activeBirthdays = celebrityMode ? celebrityBirthdays : birthdays;
   
@@ -46,6 +60,11 @@ export const BirthdayClock = () => {
     const birthdayTimeFormat = `${month}-${day}`;
     return birthdayTimeFormat === timeAsDate;
   });
+  
+  // Calculate countdown
+  const totalValidDates = getValidDateCount();
+  const filledDates = new Set(activeBirthdays.map(b => b.date)).size;
+  const remainingDates = totalValidDates - filledDates;
 
   return (
     <div className="min-h-screen bg-gradient-clock p-4 md:p-8">
@@ -93,12 +112,50 @@ export const BirthdayClock = () => {
             <div className="text-sm text-muted-foreground">
               Showing {celebrityMode ? 'celebrity' : 'personal'} birthdays for {minutes.toString().padStart(2, '0')}/{hours.toString().padStart(2, '0')} (Month/Day)
             </div>
+            <div className="text-xs text-muted-foreground mt-2">
+              📊 {filledDates} of {totalValidDates} dates filled • {remainingDates} remaining
+            </div>
           </div>
         </Card>
 
-        {/* Birthday Display */}
-        {matchingBirthdays.length > 0 && (
-          <BirthdayDisplay birthdays={matchingBirthdays} />
+        {/* Birthday Display or TBD */}
+        {currentTimeIsValidDate && (
+          <>
+            {matchingBirthdays.length > 0 ? (
+              <BirthdayDisplay birthdays={matchingBirthdays} />
+            ) : (
+              <Card className="p-8 bg-card/60 backdrop-blur-sm border-dashed border-2 border-muted-foreground/30">
+                <div className="text-center space-y-4">
+                  <div className="w-24 h-24 mx-auto rounded-full bg-muted/50 flex items-center justify-center text-4xl border-2 border-dashed border-muted-foreground/30">
+                    ❓
+                  </div>
+                  <h3 className="text-xl font-semibold text-muted-foreground">
+                    {minutes.toString().padStart(2, '0')}/{hours.toString().padStart(2, '0')} - TBD
+                  </h3>
+                  <p className="text-muted-foreground text-sm">
+                    No birthday assigned to this time yet
+                  </p>
+                  <div className="text-xs text-muted-foreground">
+                    Add someone's birthday for {minutes.toString().padStart(2, '0')}/{hours.toString().padStart(2, '0')} below
+                  </div>
+                </div>
+              </Card>
+            )}
+          </>
+        )}
+
+        {!currentTimeIsValidDate && (
+          <Card className="p-8 bg-card/40 backdrop-blur-sm border border-muted-foreground/20">
+            <div className="text-center space-y-4">
+              <div className="text-4xl">⏰</div>
+              <h3 className="text-xl font-semibold text-muted-foreground">
+                Invalid Date Time
+              </h3>
+              <p className="text-muted-foreground text-sm">
+                {minutes.toString().padStart(2, '0')}/{hours.toString().padStart(2, '0')} is not a valid calendar date
+              </p>
+            </div>
+          </Card>
         )}
 
         {/* Birthday Form - Only show in personal mode */}
