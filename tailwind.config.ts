@@ -52,6 +52,11 @@ export default {
 					DEFAULT: 'hsl(var(--card))',
 					foreground: 'hsl(var(--card-foreground))'
 				},
+				'clock-glow': 'hsl(var(--clock-glow))',
+				celebration: 'hsl(var(--celebration))',
+				'birthday-shimmer': 'hsl(var(--birthday-shimmer))',
+				'photo-frame': 'hsl(var(--photo-frame))',
+				'time-shadow': 'hsl(var(--time-shadow))',
 				sidebar: {
 					DEFAULT: 'hsl(var(--sidebar-background))',
 					foreground: 'hsl(var(--sidebar-foreground))',
@@ -84,11 +89,60 @@ export default {
 					to: {
 						height: '0'
 					}
+				},
+				'clock-pulse': {
+					'0%, 100%': { 
+						transform: 'scale(1)',
+						filter: 'drop-shadow(0 0 20px hsl(var(--clock-glow) / 0.3))'
+					},
+					'50%': { 
+						transform: 'scale(1.02)',
+						filter: 'drop-shadow(0 0 30px hsl(var(--clock-glow) / 0.6))'
+					}
+				},
+				'birthday-celebration': {
+					'0%': { 
+						transform: 'scale(0.8) rotate(-5deg)',
+						opacity: '0'
+					},
+					'50%': {
+						transform: 'scale(1.1) rotate(2deg)',
+						opacity: '1'
+					},
+					'100%': { 
+						transform: 'scale(1) rotate(0deg)',
+						opacity: '1'
+					}
+				},
+				'shimmer': {
+					'0%': { 
+						backgroundPosition: '-100% 0'
+					},
+					'100%': { 
+						backgroundPosition: '100% 0'
+					}
+				},
+				'float': {
+					'0%, 100%': { 
+						transform: 'translateY(0px)'
+					},
+					'50%': { 
+						transform: 'translateY(-10px)'
+					}
 				}
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
-				'accordion-up': 'accordion-up 0.2s ease-out'
+				'accordion-up': 'accordion-up 0.2s ease-out',
+				'clock-pulse': 'clock-pulse 3s ease-in-out infinite',
+				'birthday-celebration': 'birthday-celebration 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55)',
+				'shimmer': 'shimmer 2s linear infinite',
+				'float': 'float 6s ease-in-out infinite'
+			},
+			backgroundImage: {
+				'gradient-clock': 'var(--gradient-clock)',
+				'gradient-celebration': 'var(--gradient-celebration)',
+				'gradient-birthday': 'var(--gradient-birthday)'
 			}
 		}
 	},
