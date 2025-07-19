@@ -242,7 +242,7 @@ export const BirthdayClock = () => {
                     )}
                   </div>
                   <div className="text-sm text-muted-foreground">
-                    🎉 It's {matchingBirthdays[0].name.split(' ')[0]} o'clock! 🎂
+                    It's {matchingBirthdays[0].name} O'clock 🥳⏰
                   </div>
                 </div>
               )}
@@ -296,62 +296,6 @@ export const BirthdayClock = () => {
           </div>
         )}
 
-        {/* All Birthdays List */}
-        {activeBirthdays.length > 0 && (
-          <Card className="p-6 bg-card/80 backdrop-blur-sm border-photo-frame">
-            <h3 className="text-xl font-semibold mb-4 text-foreground">
-              {celebrityMode ? 'Celebrity Birthdays' : 'All Birthdays'} ({activeBirthdays.length})
-            </h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {activeBirthdays.map((birthday) => (
-                <div
-                  key={birthday.id}
-                  className="flex items-center gap-3 p-3 rounded-lg bg-secondary/50 border border-border"
-                >
-                  {birthday.photo ? (
-                    <img
-                      src={birthday.photo}
-                      alt={birthday.name}
-                      className="w-12 h-12 rounded-full object-cover border-2 border-photo-frame"
-                    />
-                  ) : (
-                    <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center text-muted-foreground font-semibold">
-                      {birthday.name.charAt(0).toUpperCase()}
-                    </div>
-                  )}
-                  <div className="flex-1">
-                    <div className="font-medium text-foreground">
-                      {celebrityMode && birthday.imdb ? (
-                        <a 
-                          href={birthday.imdb}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-foreground hover:text-primary transition-colors underline decoration-dotted underline-offset-2"
-                        >
-                          {birthday.name}
-                        </a>
-                      ) : (
-                        birthday.name
-                      )}
-                    </div>
-                    <div className="text-sm text-muted-foreground">
-                      {birthday.date.replace('-', '/')} (time: {birthday.date.split('-')[0]}:{birthday.date.split('-')[1]})
-                    </div>
-                  </div>
-                  {!celebrityMode && (
-                    <button
-                      onClick={() => removeBirthday(birthday.id)}
-                      className="text-muted-foreground hover:text-destructive transition-colors p-1"
-                      title="Remove birthday"
-                    >
-                      ×
-                    </button>
-                  )}
-                </div>
-              ))}
-            </div>
-          </Card>
-        )}
 
         {/* Instructions */}
         <Card className="p-6 bg-card/60 backdrop-blur-sm border-photo-frame">
