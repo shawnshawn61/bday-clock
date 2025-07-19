@@ -4,6 +4,7 @@ import { Card } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { BirthdayForm } from './BirthdayForm';
+import { QuickBirthdayEntry } from './QuickBirthdayEntry';
 import { BirthdayDisplay } from './BirthdayDisplay';
 import { useBirthdayStorage } from '@/hooks/useBirthdayStorage';
 import { celebrityBirthdays } from '@/data/celebrities';
@@ -18,6 +19,7 @@ export interface Birthday {
 export const BirthdayClock = () => {
   const [currentTime, setCurrentTime] = useState(new Date());
   const [celebrityMode, setCelebrityMode] = useState(false);
+  const [useQuickEntry, setUseQuickEntry] = useState(true);
   const { birthdays, addBirthday, removeBirthday } = useBirthdayStorage();
 
   useEffect(() => {
@@ -100,7 +102,42 @@ export const BirthdayClock = () => {
         )}
 
         {/* Birthday Form - Only show in personal mode */}
-        {!celebrityMode && <BirthdayForm onAddBirthday={addBirthday} />}
+        {!celebrityMode && (
+          <div className="space-y-4">
+            {/* Entry Mode Toggle */}
+            <div className="flex justify-center">
+              <div className="flex items-center gap-2 p-1 bg-secondary/50 rounded-lg">
+                <button
+                  onClick={() => setUseQuickEntry(true)}
+                  className={`px-3 py-2 rounded-md text-sm font-medium transition-all ${
+                    useQuickEntry 
+                      ? 'bg-primary text-primary-foreground shadow-sm' 
+                      : 'text-muted-foreground hover:text-foreground'
+                  }`}
+                >
+                  ⚡ Quick Entry
+                </button>
+                <button
+                  onClick={() => setUseQuickEntry(false)}
+                  className={`px-3 py-2 rounded-md text-sm font-medium transition-all ${
+                    !useQuickEntry 
+                      ? 'bg-primary text-primary-foreground shadow-sm' 
+                      : 'text-muted-foreground hover:text-foreground'
+                  }`}
+                >
+                  📝 Detailed Form
+                </button>
+              </div>
+            </div>
+            
+            {/* Show appropriate form */}
+            {useQuickEntry ? (
+              <QuickBirthdayEntry onAddBirthday={addBirthday} />
+            ) : (
+              <BirthdayForm onAddBirthday={addBirthday} />
+            )}
+          </div>
+        )}
 
         {/* All Birthdays List */}
         {activeBirthdays.length > 0 && (
