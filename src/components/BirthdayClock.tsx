@@ -34,22 +34,23 @@ export const BirthdayClock = () => {
   const currentTimeString = format(currentTime, 'h:mm a');
   const [hours, minutes] = format(currentTime, 'HH:mm').split(':').map(Number);
   
-  // Convert time to date format (HH:MM -> MM-DD)
-  const timeAsDate = `${minutes.toString().padStart(2, '0')}-${hours.toString().padStart(2, '0')}`;
+  // Convert time to date format (Hours:Minutes -> MM/DD)
+  // Hours become Month, Minutes become Day
+  const timeAsDate = `${hours.toString().padStart(2, '0')}-${minutes.toString().padStart(2, '0')}`;
   
-  // Calculate valid date combinations (exclude impossible dates like 02-30, 02-31, etc.)
+  // Calculate valid date combinations (exclude impossible dates like 01/32, 02/30, etc.)
   const getValidDateCount = () => {
     const daysInMonth = [31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]; // Including leap year Feb
     return daysInMonth.reduce((total, days) => total + days, 0); // 366 total
   };
   
   // Check if current time represents a valid date
-  const isValidDate = (mm: number, dd: number) => {
+  const isValidDate = (month: number, day: number) => {
     const daysInMonth = [31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
-    return mm >= 1 && mm <= 12 && dd >= 1 && dd <= daysInMonth[mm - 1];
+    return month >= 1 && month <= 12 && day >= 1 && day <= daysInMonth[month - 1];
   };
   
-  const currentTimeIsValidDate = isValidDate(minutes, hours);
+  const currentTimeIsValidDate = isValidDate(hours, minutes);
   
   // Get the appropriate birthday list based on mode
   const activeBirthdays = celebrityMode ? celebrityBirthdays : birthdays;
@@ -110,7 +111,7 @@ export const BirthdayClock = () => {
               {format(currentTime, 'EEEE, MMMM do, yyyy')}
             </div>
             <div className="text-sm text-muted-foreground">
-              Showing {celebrityMode ? 'celebrity' : 'personal'} birthdays for {minutes.toString().padStart(2, '0')}/{hours.toString().padStart(2, '0')} (Month/Day)
+              Showing {celebrityMode ? 'celebrity' : 'personal'} birthdays for {hours.toString().padStart(2, '0')}/{minutes.toString().padStart(2, '0')} (Month/Day)
             </div>
             <div className="text-xs text-muted-foreground mt-2">
               📊 {filledDates} of {totalValidDates} dates filled • {remainingDates} remaining
@@ -130,13 +131,13 @@ export const BirthdayClock = () => {
                     ❓
                   </div>
                   <h3 className="text-xl font-semibold text-muted-foreground">
-                    {minutes.toString().padStart(2, '0')}/{hours.toString().padStart(2, '0')} - TBD
+                    {hours.toString().padStart(2, '0')}/{minutes.toString().padStart(2, '0')} - TBD
                   </h3>
                   <p className="text-muted-foreground text-sm">
                     No birthday assigned to this time yet
                   </p>
                   <div className="text-xs text-muted-foreground">
-                    Add someone's birthday for {minutes.toString().padStart(2, '0')}/{hours.toString().padStart(2, '0')} below
+                    Add someone's birthday for {hours.toString().padStart(2, '0')}/{minutes.toString().padStart(2, '0')} below
                   </div>
                 </div>
               </Card>
@@ -152,7 +153,7 @@ export const BirthdayClock = () => {
                 Invalid Date Time
               </h3>
               <p className="text-muted-foreground text-sm">
-                {minutes.toString().padStart(2, '0')}/{hours.toString().padStart(2, '0')} is not a valid calendar date
+                {hours.toString().padStart(2, '0')}/{minutes.toString().padStart(2, '0')} is not a valid calendar date
               </p>
             </div>
           </Card>
@@ -245,9 +246,9 @@ export const BirthdayClock = () => {
           <h3 className="text-lg font-semibold mb-3 text-foreground">
             How it works
           </h3>
-          <div className="space-y-2 text-muted-foreground">
-            <p>• The time format maps to birthdays: minutes become month, hours become day</p>
-            <p>• For example: 2:02 PM shows people born on February 2nd (02/02)</p>
+            <div className="space-y-2 text-muted-foreground">
+              <p>• The time format maps to birthdays: hours become month, minutes become day</p>
+              <p>• For example: 2:02 PM shows people born on February 2nd (02/02)</p>
             <p>• Add birthdays manually using the form above</p>
             <p>• Photos will appear with celebration effects when birthdays match the current time</p>
           </div>
