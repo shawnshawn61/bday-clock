@@ -108,10 +108,10 @@ export const BirthdayClock = () => {
             {/* Large Time Display */}
             <div className="text-center">
               <div className="flex items-baseline gap-2">
-                <span className="text-8xl md:text-[12rem] font-mono font-bold text-celebration animate-clock-pulse leading-none">
+                <span className="text-6xl md:text-8xl font-mono font-bold text-celebration animate-clock-pulse leading-none">
                   {format(currentTime, 'h:mm')}
                 </span>
-                <span className="text-2xl md:text-3xl font-mono text-muted-foreground self-end mb-2 md:mb-4">
+                <span className="text-xl md:text-2xl font-mono text-muted-foreground self-end mb-1 md:mb-2">
                   {format(currentTime, 'a')}
                 </span>
               </div>
@@ -156,18 +156,6 @@ export const BirthdayClock = () => {
             </div>
           </div>
 
-          {/* Additional Info Below */}
-          <div className="text-center space-y-2">
-            <div className="text-lg text-muted-foreground">
-              {format(currentTime, 'EEEE, MMMM do, yyyy')}
-            </div>
-            <div className="text-sm text-muted-foreground">
-              Showing {celebrityMode ? 'celebrity' : 'personal'} birthdays for {hours.toString().padStart(2, '0')}/{minutes.toString().padStart(2, '0')} (Month/Day)
-            </div>
-            <div className="text-xs text-muted-foreground">
-              📊 {filledDates} of {totalValidDates} dates filled • {remainingDates} remaining
-            </div>
-          </div>
         </Card>
 
         {/* TBD Display - Only show when no birthdays match */}
