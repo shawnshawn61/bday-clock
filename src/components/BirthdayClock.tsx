@@ -227,7 +227,7 @@ export const BirthdayClock = () => {
                     </a>
                   ) : !celebrityMode ? (
                     <a 
-                      href={`sms:?body=Happy Birthday ${matchingBirthdays[0].name}! 🎉`}
+                      href={`sms:?body=Hiya, you popped up on Bday O'clock at ${currentTimeString} and I just wanted to say hi.`}
                       className="text-celebration hover:text-celebration/80 transition-colors underline decoration-2 underline-offset-4"
                     >
                       {matchingBirthdays[0].name}
