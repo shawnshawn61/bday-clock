@@ -210,5 +210,208 @@ export const celebrityBirthdays: Birthday[] = [
     date: '01-31',
     photo: 'https://images.unsplash.com/photo-1501286353178-1ec881214838?w=400&h=400&fit=crop&crop=face',
     imdb: 'https://www.imdb.com/name/nm0913488/'
+  },
+  {
+    id: 'celebrity-31',
+    name: 'Harry Styles',
+    date: '02-01',
+    photo: 'https://images.unsplash.com/photo-1618160702438-9b02ab6515c9?w=400&h=400&fit=crop&crop=face',
+    imdb: 'https://www.imdb.com/name/nm5077398/'
+  },
+  {
+    id: 'celebrity-32',
+    name: 'Shakira',
+    date: '02-02',
+    photo: 'https://images.unsplash.com/photo-1535268647677-300dbf3d78d1?w=400&h=400&fit=crop&crop=face',
+    imdb: 'https://www.imdb.com/name/nm0787965/'
+  },
+  {
+    id: 'celebrity-33',
+    name: 'Michael C. Hall',
+    date: '02-03',
+    photo: 'https://images.unsplash.com/photo-1501286353178-1ec881214838?w=400&h=400&fit=crop&crop=face',
+    imdb: 'https://www.imdb.com/name/nm0355910/'
+  },
+  {
+    id: 'celebrity-34',
+    name: 'Alice Cooper',
+    date: '02-04',
+    photo: 'https://images.unsplash.com/photo-1618160702438-9b02ab6515c9?w=400&h=400&fit=crop&crop=face',
+    imdb: 'https://www.imdb.com/name/nm0177933/'
+  },
+  {
+    id: 'celebrity-35',
+    name: 'Esmé Creed‑Miles',
+    date: '02-05',
+    photo: 'https://images.unsplash.com/photo-1535268647677-300dbf3d78d1?w=400&h=400&fit=crop&crop=face',
+    imdb: 'https://www.imdb.com/name/nm6565772/'
+  },
+  {
+    id: 'celebrity-36',
+    name: 'Axl Rose',
+    date: '02-06',
+    photo: 'https://images.unsplash.com/photo-1501286353178-1ec881214838?w=400&h=400&fit=crop&crop=face',
+    imdb: 'https://www.imdb.com/name/nm0745115/'
+  },
+  {
+    id: 'celebrity-37',
+    name: 'Garth Brooks',
+    date: '02-07',
+    photo: 'https://images.unsplash.com/photo-1618160702438-9b02ab6515c9?w=400&h=400&fit=crop&crop=face',
+    imdb: 'https://www.imdb.com/name/nm0112046/'
+  },
+  {
+    id: 'celebrity-38',
+    name: 'Chris Rock',
+    date: '02-08',
+    photo: 'https://images.unsplash.com/photo-1535268647677-300dbf3d78d1?w=400&h=400&fit=crop&crop=face',
+    imdb: 'https://www.imdb.com/name/nm0001674/'
+  },
+  {
+    id: 'celebrity-39',
+    name: 'Tom Hiddleston',
+    date: '02-09',
+    photo: 'https://images.unsplash.com/photo-1501286353178-1ec881214838?w=400&h=400&fit=crop&crop=face',
+    imdb: 'https://www.imdb.com/name/nm1089991/'
+  },
+  {
+    id: 'celebrity-40',
+    name: 'Michael B. Jordan',
+    date: '02-10',
+    photo: 'https://images.unsplash.com/photo-1618160702438-9b02ab6515c9?w=400&h=400&fit=crop&crop=face',
+    imdb: 'https://www.imdb.com/name/nm0430107/'
+  },
+  {
+    id: 'celebrity-41',
+    name: 'Jennifer Aniston',
+    date: '02-11',
+    photo: 'https://images.unsplash.com/photo-1535268647677-300dbf3d78d1?w=400&h=400&fit=crop&crop=face',
+    imdb: 'https://www.imdb.com/name/nm0000098/'
+  },
+  {
+    id: 'celebrity-42',
+    name: 'Jane Seymour',
+    date: '02-12',
+    photo: 'https://images.unsplash.com/photo-1501286353178-1ec881214838?w=400&h=400&fit=crop&crop=face',
+    imdb: 'https://www.imdb.com/name/nm0001742/'
+  },
+  {
+    id: 'celebrity-43',
+    name: 'Cindy Crawford',
+    date: '02-13',
+    photo: 'https://images.unsplash.com/photo-1618160702438-9b02ab6515c9?w=400&h=400&fit=crop&crop=face',
+    imdb: 'https://www.imdb.com/name/nm0000115/'
+  },
+  {
+    id: 'celebrity-44',
+    name: 'Tom Hanks',
+    date: '02-14',
+    photo: 'https://images.unsplash.com/photo-1535268647677-300dbf3d78d1?w=400&h=400&fit=crop&crop=face',
+    imdb: 'https://www.imdb.com/name/nm0000158/'
+  },
+  {
+    id: 'celebrity-45',
+    name: 'Megan Thee Stallion',
+    date: '02-15',
+    photo: 'https://images.unsplash.com/photo-1501286353178-1ec881214838?w=400&h=400&fit=crop&crop=face',
+    imdb: 'https://www.imdb.com/name/nm10042344/'
+  },
+  {
+    id: 'celebrity-46',
+    name: 'Elizabeth Olsen',
+    date: '02-16',
+    photo: 'https://images.unsplash.com/photo-1618160702438-9b02ab6515c9?w=400&h=400&fit=crop&crop=face',
+    imdb: 'https://www.imdb.com/name/nm0647634/'
+  },
+  {
+    id: 'celebrity-47',
+    name: 'Paris Hilton',
+    date: '02-17',
+    photo: 'https://images.unsplash.com/photo-1535268647677-300dbf3d78d1?w=400&h=400&fit=crop&crop=face',
+    imdb: 'https://www.imdb.com/name/nm0003142/'
+  },
+  {
+    id: 'celebrity-48',
+    name: 'John Travolta',
+    date: '02-18',
+    photo: 'https://images.unsplash.com/photo-1501286353178-1ec881214838?w=400&h=400&fit=crop&crop=face',
+    imdb: 'https://www.imdb.com/name/nm0000059/'
+  },
+  {
+    id: 'celebrity-49',
+    name: 'Simone Biles',
+    date: '02-19',
+    photo: 'https://images.unsplash.com/photo-1618160702438-9b02ab6515c9?w=400&h=400&fit=crop&crop=face',
+    imdb: 'https://www.imdb.com/name/nm6978170/'
+  },
+  {
+    id: 'celebrity-50',
+    name: 'Rihanna',
+    date: '02-20',
+    photo: 'https://images.unsplash.com/photo-1535268647677-300dbf3d78d1?w=400&h=400&fit=crop&crop=face',
+    imdb: 'https://www.imdb.com/name/nm2606923/'
+  },
+  {
+    id: 'celebrity-51',
+    name: 'Elliot Page',
+    date: '02-21',
+    photo: 'https://images.unsplash.com/photo-1501286353178-1ec881214838?w=400&h=400&fit=crop&crop=face',
+    imdb: 'https://www.imdb.com/name/nm0680983/'
+  },
+  {
+    id: 'celebrity-52',
+    name: 'Drew Barrymore',
+    date: '02-22',
+    photo: 'https://images.unsplash.com/photo-1618160702438-9b02ab6515c9?w=400&h=400&fit=crop&crop=face',
+    imdb: 'https://www.imdb.com/name/nm0000106/'
+  },
+  {
+    id: 'celebrity-53',
+    name: 'Dakota Fanning',
+    date: '02-23',
+    photo: 'https://images.unsplash.com/photo-1535268647677-300dbf3d78d1?w=400&h=400&fit=crop&crop=face',
+    imdb: 'https://www.imdb.com/name/nm0266824/'
+  },
+  {
+    id: 'celebrity-54',
+    name: 'Daniel Craig',
+    date: '02-24',
+    photo: 'https://images.unsplash.com/photo-1501286353178-1ec881214838?w=400&h=400&fit=crop&crop=face',
+    imdb: 'https://www.imdb.com/name/nm0185819/'
+  },
+  {
+    id: 'celebrity-55',
+    name: 'Tony Robbins',
+    date: '02-25',
+    photo: 'https://images.unsplash.com/photo-1618160702438-9b02ab6515c9?w=400&h=400&fit=crop&crop=face',
+    imdb: 'https://www.imdb.com/name/nm0731671/'
+  },
+  {
+    id: 'celebrity-56',
+    name: 'Erykah Badu',
+    date: '02-26',
+    photo: 'https://images.unsplash.com/photo-1535268647677-300dbf3d78d1?w=400&h=400&fit=crop&crop=face',
+    imdb: 'https://www.imdb.com/name/nm0046096/'
+  },
+  {
+    id: 'celebrity-57',
+    name: 'Justin Bieber',
+    date: '02-27',
+    photo: 'https://images.unsplash.com/photo-1501286353178-1ec881214838?w=400&h=400&fit=crop&crop=face',
+    imdb: 'https://www.imdb.com/name/nm3745796/'
+  },
+  {
+    id: 'celebrity-58',
+    name: 'Jonathan Daviss',
+    date: '02-28',
+    photo: 'https://images.unsplash.com/photo-1618160702438-9b02ab6515c9?w=400&h=400&fit=crop&crop=face',
+    imdb: 'https://www.imdb.com/name/nm7736758/'
+  },
+  {
+    id: 'celebrity-59',
+    name: 'Ja Rule',
+    date: '02-29',
+    photo: 'https://images.unsplash.com/photo-1535268647677-300dbf3d78d1?w=400&h=400&fit=crop&crop=face',
+    imdb: 'https://www.imdb.com/name/nm0005310/'
   }
 ];
