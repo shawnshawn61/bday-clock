@@ -138,115 +138,117 @@ export const BirthdayClock = () => {
 
         {/* Digital Clock */}
         <Card className="p-6 md:p-8 bg-card/80 backdrop-blur-sm border-photo-frame">
-          {/* Clock and Photo Unit */}
-          <div className="flex items-center justify-center gap-8 mb-6">
-            {/* Large Time Display */}
-            <div className="text-center">
-              <div className="flex items-baseline gap-2">
-                <span className="text-6xl md:text-8xl font-mono font-bold text-celebration animate-clock-pulse leading-none">
-                  {format(currentTime, 'h:mm')}
-                </span>
-                <span className="text-xl md:text-2xl font-mono text-muted-foreground self-end mb-1 md:mb-2">
-                  {format(currentTime, 'a')}
-                </span>
-              </div>
-            </div>
-            
-            {/* Portrait Photo - Always present for consistent layout */}
-            <div className="flex-shrink-0 relative">
-              <div className="w-32 md:w-48 aspect-[3/4] rounded-xl overflow-hidden border-4 border-photo-frame shadow-lg">
-                {shouldShowGift ? (
-                  <div className="w-full h-full relative group">
-                    <img
-                      src={currentGift.image}
-                      alt={currentGift.title}
-                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                    <div className="absolute bottom-3 left-3 right-3 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                      <div className="text-sm font-medium truncate">{currentGift.title}</div>
-                      <div className="text-xs opacity-80 truncate">{currentGift.description}</div>
-                    </div>
-                  </div>
-                ) : currentTimeIsValidDate && matchingBirthdays.length > 0 ? (
-                  matchingBirthdays[0].photo ? (
-                    <img
-                      src={matchingBirthdays[0].photo}
-                      alt={matchingBirthdays[0].name}
-                      className="w-full h-full object-cover"
-                    />
-                  ) : (
-                    <div className="w-full h-full bg-gradient-to-br from-celebration to-celebration/70 flex items-center justify-center text-4xl md:text-6xl text-white font-bold">
-                      {matchingBirthdays[0].name.charAt(0).toUpperCase()}
-                    </div>
-                  )
-                ) : (
-                  <div className="w-full h-full bg-gradient-to-br from-primary/20 to-secondary/30 flex items-center justify-center">
-                    <div className="text-center text-muted-foreground/50">
-                      <div className="text-3xl md:text-5xl mb-2">🎂</div>
-                      <button 
-                        onClick={() => {
-                          const formSection = document.querySelector('[data-form-section]');
-                          formSection?.scrollIntoView({ behavior: 'smooth' });
-                          setTimeout(() => {
-                            const nameInput = document.querySelector('input[placeholder*="name"], input[name="name"]') as HTMLInputElement;
-                            nameInput?.focus();
-                          }, 300);
-                        }}
-                        className="text-xs md:text-sm font-medium text-primary hover:text-primary/80 transition-colors underline"
-                      >
-                        Add Friend
-                      </button>
-                    </div>
-                  </div>
-                )}
-              </div>
-              
-              {/* Countdown counter */}
-              <div className="absolute -bottom-2 -right-2 text-xs text-muted-foreground/60 font-mono">
-                {remainingDates}
-              </div>
-              
-              {/* Gift showcase info */}
-              {shouldShowGift && (
-                <div className="text-center mt-3">
-                  <div className="text-lg font-semibold text-foreground mb-1">
-                    {currentGift.title}
-                  </div>
-                  <a 
-                    href={currentGift.link}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-block text-sm text-primary hover:text-primary/80 transition-colors underline decoration-dotted underline-offset-2"
-                  >
-                    Shop at {currentGift.retailer}
-                  </a>
+          {/* Clock and Photo Unit - Centered */}
+          <div className="flex flex-col items-center justify-center space-y-6">
+            {/* Time and Photo Row */}
+            <div className="flex items-center justify-center gap-6 md:gap-8">
+              {/* Large Time Display */}
+              <div className="text-center">
+                <div className="flex items-baseline gap-2">
+                  <span className="text-5xl md:text-7xl font-mono font-bold text-celebration animate-clock-pulse leading-none">
+                    {format(currentTime, 'h:mm')}
+                  </span>
+                  <span className="text-lg md:text-xl font-mono text-muted-foreground self-end mb-1 md:mb-2">
+                    {format(currentTime, 'a')}
+                  </span>
                 </div>
-              )}
-
-              {/* Birthday info below photo - only when there's a match */}
-              {currentTimeIsValidDate && matchingBirthdays.length > 0 && !shouldShowGift && (
-                <div className="text-center mt-3">
-                  <div className="text-lg font-semibold text-foreground">
-                    {celebrityMode && matchingBirthdays[0].imdb ? (
-                      <a 
-                        href={matchingBirthdays[0].imdb}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-foreground hover:text-primary transition-colors underline decoration-dotted underline-offset-2"
-                      >
-                        {matchingBirthdays[0].name}
-                      </a>
+              </div>
+              
+              {/* Portrait Photo - Always present for consistent layout */}
+              <div className="flex-shrink-0 relative">
+                <div className="w-24 md:w-36 aspect-[3/4] rounded-xl overflow-hidden border-4 border-photo-frame shadow-lg">
+                  {shouldShowGift ? (
+                    <div className="w-full h-full relative group">
+                      <img
+                        src={currentGift.image}
+                        alt={currentGift.title}
+                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                      <div className="absolute bottom-2 left-2 right-2 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                        <div className="text-xs font-medium truncate">{currentGift.title}</div>
+                        <div className="text-xs opacity-80 truncate">{currentGift.description}</div>
+                      </div>
+                    </div>
+                  ) : currentTimeIsValidDate && matchingBirthdays.length > 0 ? (
+                    matchingBirthdays[0].photo ? (
+                      <img
+                        src={matchingBirthdays[0].photo}
+                        alt={matchingBirthdays[0].name}
+                        className="w-full h-full object-cover"
+                      />
                     ) : (
-                      matchingBirthdays[0].name
-                    )}
-                  </div>
-                  <div className="text-sm text-muted-foreground">
-                    It's {matchingBirthdays[0].name} O'clock 🥳⏰
-                  </div>
+                      <div className="w-full h-full bg-gradient-to-br from-celebration to-celebration/70 flex items-center justify-center text-3xl md:text-5xl text-white font-bold">
+                        {matchingBirthdays[0].name.charAt(0).toUpperCase()}
+                      </div>
+                    )
+                  ) : (
+                    <div className="w-full h-full bg-gradient-to-br from-primary/20 to-secondary/30 flex items-center justify-center">
+                      <div className="text-center text-muted-foreground/50">
+                        <div className="text-2xl md:text-4xl mb-1">🎂</div>
+                        <button 
+                          onClick={() => {
+                            const formSection = document.querySelector('[data-form-section]');
+                            formSection?.scrollIntoView({ behavior: 'smooth' });
+                            setTimeout(() => {
+                              const nameInput = document.querySelector('input[placeholder*="name"], input[name="name"]') as HTMLInputElement;
+                              nameInput?.focus();
+                            }, 300);
+                          }}
+                          className="text-xs font-medium text-primary hover:text-primary/80 transition-colors underline"
+                        >
+                          Add Friend
+                        </button>
+                      </div>
+                    </div>
+                  )}
                 </div>
-              )}
+                
+                {/* Countdown counter */}
+                <div className="absolute -bottom-2 -right-2 text-xs text-muted-foreground/60 font-mono">
+                  {remainingDates}
+                </div>
+              </div>
             </div>
+
+            {/* Celebrity O'clock Message - Full Width */}
+            {currentTimeIsValidDate && matchingBirthdays.length > 0 && !shouldShowGift && (
+              <div className="w-full text-center">
+                <div className="text-lg md:text-xl font-playfair font-medium text-foreground px-4">
+                  It's{' '}
+                  {celebrityMode && matchingBirthdays[0].imdb ? (
+                    <a 
+                      href={matchingBirthdays[0].imdb}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-celebration hover:text-celebration/80 transition-colors underline decoration-2 underline-offset-4"
+                    >
+                      {matchingBirthdays[0].name}
+                    </a>
+                  ) : (
+                    <span className="text-celebration">{matchingBirthdays[0].name}</span>
+                  )}
+                  {' '}O'clock! 🥳⏰
+                </div>
+              </div>
+            )}
+
+            {/* Gift showcase info */}
+            {shouldShowGift && (
+              <div className="text-center">
+                <div className="text-lg font-semibold text-foreground mb-1">
+                  {currentGift.title}
+                </div>
+                <a 
+                  href={currentGift.link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-block text-sm text-primary hover:text-primary/80 transition-colors underline decoration-dotted underline-offset-2"
+                >
+                  Shop at {currentGift.retailer}
+                </a>
+              </div>
+            )}
           </div>
 
         </Card>
