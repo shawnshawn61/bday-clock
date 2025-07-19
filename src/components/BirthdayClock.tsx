@@ -146,17 +146,39 @@ export const BirthdayClock = () => {
         )}
 
         {!currentTimeIsValidDate && (
-          <Card className="p-8 bg-card/40 backdrop-blur-sm border border-muted-foreground/20">
-            <div className="text-center space-y-4">
-              <div className="text-4xl">⏰</div>
-              <h3 className="text-xl font-semibold text-muted-foreground">
-                Invalid Date Time
-              </h3>
-              <p className="text-muted-foreground text-sm">
-                {hours.toString().padStart(2, '0')}/{minutes.toString().padStart(2, '0')} is not a valid calendar date
-              </p>
+          <div className="relative overflow-hidden rounded-xl">
+            {/* Wallpaper Mode */}
+            <div 
+              className="h-96 bg-cover bg-center bg-no-repeat rounded-xl shadow-lg relative"
+              style={{
+                backgroundImage: `url('https://images.unsplash.com/photo-1470813740244-df37b8c1edcb?w=1200&h=600&fit=crop')`
+              }}
+            >
+              {/* Overlay */}
+              <div className="absolute inset-0 bg-black/40 backdrop-blur-[1px] rounded-xl" />
+              
+              {/* Content */}
+              <div className="relative h-full flex items-center justify-center">
+                <div className="text-center space-y-4 text-white">
+                  <div className="text-5xl mb-4">🌟</div>
+                  <h3 className="text-3xl font-bold tracking-wide">
+                    Wallpaper Mode
+                  </h3>
+                  <p className="text-lg opacity-90">
+                    {hours.toString().padStart(2, '0')}:{minutes.toString().padStart(2, '0')} - Impossible Time
+                  </p>
+                  <p className="text-sm opacity-75 max-w-md mx-auto">
+                    Enjoying the view while we wait for a valid date time
+                  </p>
+                </div>
+              </div>
+              
+              {/* Decorative elements */}
+              <div className="absolute top-4 right-4 text-white/60 text-sm">
+                Wallpaper Mode
+              </div>
             </div>
-          </Card>
+          </div>
         )}
 
         {/* Birthday Form - Only show in personal mode */}
