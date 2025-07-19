@@ -73,33 +73,13 @@ export const BirthdayClock = () => {
         {/* Header */}
         <div className="text-center space-y-4">
           <h1 className="text-4xl md:text-6xl font-bold text-foreground mb-2">
-            Birthday Clock
+            Bday O'clock
           </h1>
           <p className="text-muted-foreground text-lg">
-            See your loved ones when time aligns with their special day
+            See friends the minute the time mirrors their bday month and day.
           </p>
         </div>
 
-        {/* Celebrity Mode Toggle */}
-        <Card className="p-6 bg-card/80 backdrop-blur-sm border-photo-frame">
-          <div className="flex items-center justify-center gap-4">
-            <Label htmlFor="celebrity-mode" className="text-lg font-medium text-foreground">
-              {celebrityMode ? '⭐ Celebrity Mode' : '👥 Personal Mode'}
-            </Label>
-            <Switch
-              id="celebrity-mode"
-              checked={celebrityMode}
-              onCheckedChange={setCelebrityMode}
-              className="data-[state=checked]:bg-celebration"
-            />
-          </div>
-          <p className="text-center text-sm text-muted-foreground mt-2">
-            {celebrityMode 
-              ? 'Showing famous celebrities when time matches their birth dates'
-              : 'Showing your personal contacts and their birthdays'
-            }
-          </p>
-        </Card>
 
         {/* Digital Clock */}
         <Card className="p-6 md:p-8 bg-card/80 backdrop-blur-sm border-photo-frame">
@@ -279,6 +259,27 @@ export const BirthdayClock = () => {
               <p>Fill the clock with faces you love.</p>
               <p>•  Bonus: You'll know every birthday by heart. In no time.</p>
           </div>
+        </Card>
+
+        {/* Celebrity Mode Toggle */}
+        <Card className="p-6 bg-card/80 backdrop-blur-sm border-photo-frame">
+          <div className="flex items-center justify-center gap-4">
+            <Label htmlFor="celebrity-mode" className="text-lg font-medium text-foreground">
+              {celebrityMode ? '⭐ Celebrity Mode' : '👥 Personal Mode'}
+            </Label>
+            <Switch
+              id="celebrity-mode"
+              checked={celebrityMode}
+              onCheckedChange={setCelebrityMode}
+              className="data-[state=checked]:bg-celebration"
+            />
+          </div>
+          <p className="text-center text-sm text-muted-foreground mt-2">
+            {celebrityMode 
+              ? 'Showing famous celebrities when time matches their birth dates'
+              : 'Showing your personal contacts and their birthdays'
+            }
+          </p>
         </Card>
       </div>
     </div>
