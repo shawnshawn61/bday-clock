@@ -116,7 +116,19 @@ export const BirthdayClock = () => {
                   <div className="w-full h-full bg-gradient-to-br from-primary/20 to-secondary/30 flex items-center justify-center">
                     <div className="text-center text-muted-foreground/50">
                       <div className="text-3xl md:text-5xl mb-2">🎂</div>
-                      <div className="text-xs md:text-sm font-medium">Birthday<br/>Clock</div>
+                      <button 
+                        onClick={() => {
+                          const formSection = document.querySelector('[data-form-section]');
+                          formSection?.scrollIntoView({ behavior: 'smooth' });
+                          setTimeout(() => {
+                            const nameInput = document.querySelector('input[placeholder*="name"], input[name="name"]') as HTMLInputElement;
+                            nameInput?.focus();
+                          }, 300);
+                        }}
+                        className="text-xs md:text-sm font-medium text-primary hover:text-primary/80 transition-colors underline"
+                      >
+                        Add Friend
+                      </button>
                     </div>
                   </div>
                 )}
@@ -166,7 +178,7 @@ export const BirthdayClock = () => {
 
         {/* Birthday Form - Only show in personal mode */}
         {!celebrityMode && (
-          <div className="space-y-4">
+          <div className="space-y-4" data-form-section>
             {/* Entry Mode Toggle */}
             <div className="flex justify-center">
               <div className="flex items-center gap-2 p-1 bg-secondary/50 rounded-lg">
