@@ -97,12 +97,6 @@ export const BirthdayClock = () => {
   // Get the appropriate birthday list based on mode
   const activeBirthdays = celebrityMode ? celebrityBirthdays : birthdays;
   
-  // Debug logging for celebrity mode
-  console.log('Celebrity mode:', celebrityMode);
-  console.log('Active birthdays length:', activeBirthdays.length);
-  console.log('Celebrity birthdays length:', celebrityBirthdays.length);
-  console.log('Personal birthdays length:', birthdays.length);
-  
   // Find birthdays that match current time
   const matchingBirthdays = activeBirthdays.filter(birthday => {
     const [month, day] = birthday.date.split('-');
@@ -199,16 +193,10 @@ export const BirthdayClock = () => {
                   ) : currentTimeIsValidDate && matchingBirthdays.length > 0 ? (
                     (() => {
                       const currentBirthday = matchingBirthdays[currentBirthdayIndex];
-                      console.log('DEBUG: currentBirthday:', currentBirthday);
-                      console.log('DEBUG: getCelebrityPhoto result:', celebrityMode ? getCelebrityPhoto(currentBirthday.name) : 'not in celebrity mode');
-                      console.log('DEBUG: currentBirthday.photo:', currentBirthday?.photo);
-                      
-                      // Use celebrity photo service first for high-quality photos, then fallback
+                      // Use celebrity photo service for celebrities, original photo for personal contacts
                       const photoUrl = celebrityMode 
-                        ? getCelebrityPhoto(currentBirthday.name) || currentBirthday?.photo || getFallbackPhoto(currentBirthday.name)
+                        ? getCelebrityPhoto(currentBirthday.name) || getFallbackPhoto(currentBirthday.name)
                         : currentBirthday?.photo;
-                      
-                      console.log('DEBUG: Final photoUrl:', photoUrl);
                       
                       return photoUrl ? (
                         <img
@@ -273,28 +261,24 @@ export const BirthdayClock = () => {
               <div className="w-full text-center">
                 <div className="text-lg md:text-xl font-playfair font-medium text-foreground px-4">
                   It's{' '}
-                  {celebrityMode ? (
-                    matchingBirthdays[currentBirthdayIndex]?.imdb ? (
-                      <a 
-                        href={matchingBirthdays[currentBirthdayIndex].imdb}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-celebration hover:text-celebration/80 transition-colors underline decoration-2 underline-offset-4"
-                      >
-                        {matchingBirthdays[currentBirthdayIndex].name}
-                      </a>
-                    ) : (
-                      <span className="text-celebration">
-                        {matchingBirthdays[currentBirthdayIndex].name}
-                      </span>
-                    )
-                  ) : (
+                  {celebrityMode && matchingBirthdays[currentBirthdayIndex]?.imdb ? (
+                    <a 
+                      href={matchingBirthdays[currentBirthdayIndex].imdb}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-celebration hover:text-celebration/80 transition-colors underline decoration-2 underline-offset-4"
+                    >
+                      {matchingBirthdays[currentBirthdayIndex].name}
+                    </a>
+                  ) : !celebrityMode ? (
                     <a 
                       href={`sms:?body=Hiya, you popped up on Bday Clock at ${currentTimeString} and I just wanted to say hi.`}
                       className="text-celebration hover:text-celebration/80 transition-colors underline decoration-2 underline-offset-4"
                     >
                       {matchingBirthdays[currentBirthdayIndex]?.name}
                     </a>
+                  ) : (
+                    <span className="text-celebration">{matchingBirthdays[currentBirthdayIndex]?.name}</span>
                   )}
                   {' '}O'clock! 🥳⏰
                 </div>
@@ -322,73 +306,29 @@ export const BirthdayClock = () => {
         </Card>
 
 
-        {/* Gift Shop */}
-        <Card className="p-6 bg-card/80 backdrop-blur-sm border-photo-frame">
-          <div className="text-center space-y-4">
-            <h2 className="text-2xl font-bold text-foreground">
-              {celebrityMode ? "Bday Clock eLux Shop" : "Bday Clock eGift Shop"}
-            </h2>
-            <p className="text-muted-foreground text-sm italic">Last minute gifts.</p>
-            
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto">
-              {celebrityMode ? (
-                <>
-                  {/* Luxury Items */}
-                  <div className="p-4 bg-secondary/30 rounded-lg hover:bg-secondary/50 transition-colors cursor-pointer">
-                    <div className="text-2xl mb-2">💎</div>
-                    <div className="text-sm font-medium">Jewelry</div>
-                    <div className="text-xs text-muted-foreground">Fine Jewelry</div>
-                  </div>
-                  
-                  <div className="p-4 bg-secondary/30 rounded-lg hover:bg-secondary/50 transition-colors cursor-pointer">
-                    <div className="text-2xl mb-2">🏖️</div>
-                    <div className="text-sm font-medium">Excursions</div>
-                    <div className="text-xs text-muted-foreground">Travel Experiences</div>
-                  </div>
-                  
-                  <div className="p-4 bg-secondary/30 rounded-lg hover:bg-secondary/50 transition-colors cursor-pointer">
-                    <div className="text-2xl mb-2">🏨</div>
-                    <div className="text-sm font-medium">Luxury Hotels</div>
-                    <div className="text-xs text-muted-foreground">Premium Stays</div>
-                  </div>
-                  
-                  <div className="p-4 bg-secondary/30 rounded-lg hover:bg-secondary/50 transition-colors cursor-pointer">
-                    <div className="text-2xl mb-2">👜</div>
-                    <div className="text-sm font-medium">Luxury Goods</div>
-                    <div className="text-xs text-muted-foreground">Designer Items</div>
-                  </div>
-                </>
-              ) : (
-                <>
-                  {/* Regular Gift Cards */}
-                  <div className="p-4 bg-secondary/30 rounded-lg hover:bg-secondary/50 transition-colors cursor-pointer">
-                    <div className="text-2xl mb-2">🛍️</div>
-                    <div className="text-sm font-medium">Retail</div>
-                    <div className="text-xs text-muted-foreground">Gift Cards</div>
-                  </div>
-                  
-                  <div className="p-4 bg-secondary/30 rounded-lg hover:bg-secondary/50 transition-colors cursor-pointer">
-                    <div className="text-2xl mb-2">🍽️</div>
-                    <div className="text-sm font-medium">Dining</div>
-                    <div className="text-xs text-muted-foreground">Restaurants</div>
-                  </div>
-                  
-                  <div className="p-4 bg-secondary/30 rounded-lg hover:bg-secondary/50 transition-colors cursor-pointer">
-                    <div className="text-2xl mb-2">💆</div>
-                    <div className="text-sm font-medium">Spa</div>
-                    <div className="text-xs text-muted-foreground">Experiences</div>
-                  </div>
-                  
-                  <div className="p-4 bg-secondary/30 rounded-lg hover:bg-secondary/50 transition-colors cursor-pointer">
-                    <div className="text-2xl mb-2">📱</div>
-                    <div className="text-sm font-medium">Apps</div>
-                    <div className="text-xs text-muted-foreground">Subscriptions</div>
-                  </div>
-                </>
-              )}
-            </div>
-          </div>
-        </Card>
+        {/* Additional Birthday Celebration Display - Show all birthdays with slideshow indicator */}
+        {currentTimeIsValidDate && matchingBirthdays.length > 0 && (
+          <>
+            <BirthdayDisplay birthdays={matchingBirthdays} />
+            {matchingBirthdays.length > 1 && (
+              <div className="flex justify-center items-center gap-2">
+                <span className="text-sm text-muted-foreground">
+                  {currentBirthdayIndex + 1} of {matchingBirthdays.length}
+                </span>
+                <div className="flex gap-1">
+                  {matchingBirthdays.map((_, index) => (
+                    <div
+                      key={index}
+                      className={`w-2 h-2 rounded-full transition-colors ${
+                        index === currentBirthdayIndex ? 'bg-celebration' : 'bg-muted-foreground/30'
+                      }`}
+                    />
+                  ))}
+                </div>
+              </div>
+            )}
+          </>
+        )}
 
 
         {/* Birthday Form - Only show in personal mode */}
