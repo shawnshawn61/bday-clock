@@ -199,9 +199,9 @@ export const BirthdayClock = () => {
                   ) : currentTimeIsValidDate && matchingBirthdays.length > 0 ? (
                     (() => {
                       const currentBirthday = matchingBirthdays[currentBirthdayIndex];
-                      // Use celebrity photo service for celebrities, original photo for personal contacts
+                      // Use photo from data first, then celebrity photo service as backup
                       const photoUrl = celebrityMode 
-                        ? getCelebrityPhoto(currentBirthday.name) || getFallbackPhoto(currentBirthday.name)
+                        ? currentBirthday?.photo || getCelebrityPhoto(currentBirthday.name) || getFallbackPhoto(currentBirthday.name)
                         : currentBirthday?.photo;
                       
                       return photoUrl ? (
