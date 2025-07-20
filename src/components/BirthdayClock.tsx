@@ -273,24 +273,28 @@ export const BirthdayClock = () => {
               <div className="w-full text-center">
                 <div className="text-lg md:text-xl font-playfair font-medium text-foreground px-4">
                   It's{' '}
-                  {celebrityMode && matchingBirthdays[currentBirthdayIndex]?.imdb ? (
-                    <a 
-                      href={matchingBirthdays[currentBirthdayIndex].imdb}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-celebration hover:text-celebration/80 transition-colors underline decoration-2 underline-offset-4"
-                    >
-                      {matchingBirthdays[currentBirthdayIndex].name}
-                    </a>
-                  ) : !celebrityMode ? (
+                  {celebrityMode ? (
+                    matchingBirthdays[currentBirthdayIndex]?.imdb ? (
+                      <a 
+                        href={matchingBirthdays[currentBirthdayIndex].imdb}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-celebration hover:text-celebration/80 transition-colors underline decoration-2 underline-offset-4"
+                      >
+                        {matchingBirthdays[currentBirthdayIndex].name}
+                      </a>
+                    ) : (
+                      <span className="text-celebration">
+                        {matchingBirthdays[currentBirthdayIndex].name}
+                      </span>
+                    )
+                  ) : (
                     <a 
                       href={`sms:?body=Hiya, you popped up on Bday Clock at ${currentTimeString} and I just wanted to say hi.`}
                       className="text-celebration hover:text-celebration/80 transition-colors underline decoration-2 underline-offset-4"
                     >
                       {matchingBirthdays[currentBirthdayIndex]?.name}
                     </a>
-                  ) : (
-                    <span className="text-celebration">{matchingBirthdays[currentBirthdayIndex]?.name}</span>
                   )}
                   {' '}O'clock! 🥳⏰
                 </div>
