@@ -306,30 +306,6 @@ export const BirthdayClock = () => {
         </Card>
 
 
-        {/* Celebrity birthdays display */}
-        {celebrityMode && currentTimeIsValidDate && matchingBirthdays.length > 0 && (
-          <>
-            <BirthdayDisplay birthdays={matchingBirthdays} />
-            {matchingBirthdays.length > 1 && (
-              <div className="flex justify-center items-center gap-2">
-                <span className="text-sm text-muted-foreground">
-                  {currentBirthdayIndex + 1} of {matchingBirthdays.length}
-                </span>
-                <div className="flex gap-1">
-                  {matchingBirthdays.map((_, index) => (
-                    <div
-                      key={index}
-                      className={`w-2 h-2 rounded-full transition-colors ${
-                        index === currentBirthdayIndex ? 'bg-celebration' : 'bg-muted-foreground/30'
-                      }`}
-                    />
-                  ))}
-                </div>
-              </div>
-            )}
-          </>
-        )}
-
         {/* Gift Shop */}
         <Card className="p-6 bg-card/80 backdrop-blur-sm border-photo-frame">
           <div className="text-center space-y-4">
