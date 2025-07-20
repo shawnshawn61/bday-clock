@@ -306,29 +306,40 @@ export const BirthdayClock = () => {
         </Card>
 
 
-        {/* Additional Birthday Celebration Display - Show all birthdays with slideshow indicator */}
-        {currentTimeIsValidDate && matchingBirthdays.length > 0 && (
-          <>
-            <BirthdayDisplay birthdays={matchingBirthdays} />
-            {matchingBirthdays.length > 1 && (
-              <div className="flex justify-center items-center gap-2">
-                <span className="text-sm text-muted-foreground">
-                  {currentBirthdayIndex + 1} of {matchingBirthdays.length}
-                </span>
-                <div className="flex gap-1">
-                  {matchingBirthdays.map((_, index) => (
-                    <div
-                      key={index}
-                      className={`w-2 h-2 rounded-full transition-colors ${
-                        index === currentBirthdayIndex ? 'bg-celebration' : 'bg-muted-foreground/30'
-                      }`}
-                    />
-                  ))}
-                </div>
+        {/* Bday Clock eGift Shop */}
+        <Card className="p-6 bg-card/80 backdrop-blur-sm border-photo-frame">
+          <div className="text-center space-y-4">
+            <h2 className="text-2xl font-bold text-foreground">Bday Clock eGift Shop</h2>
+            <p className="text-muted-foreground text-sm italic">Last minute gifts.</p>
+            
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto">
+              {/* Gift Cards */}
+              <div className="p-4 bg-secondary/30 rounded-lg hover:bg-secondary/50 transition-colors cursor-pointer">
+                <div className="text-2xl mb-2">🛍️</div>
+                <div className="text-sm font-medium">Retail</div>
+                <div className="text-xs text-muted-foreground">Gift Cards</div>
               </div>
-            )}
-          </>
-        )}
+              
+              <div className="p-4 bg-secondary/30 rounded-lg hover:bg-secondary/50 transition-colors cursor-pointer">
+                <div className="text-2xl mb-2">🍽️</div>
+                <div className="text-sm font-medium">Dining</div>
+                <div className="text-xs text-muted-foreground">Restaurants</div>
+              </div>
+              
+              <div className="p-4 bg-secondary/30 rounded-lg hover:bg-secondary/50 transition-colors cursor-pointer">
+                <div className="text-2xl mb-2">💆</div>
+                <div className="text-sm font-medium">Spa</div>
+                <div className="text-xs text-muted-foreground">Experiences</div>
+              </div>
+              
+              <div className="p-4 bg-secondary/30 rounded-lg hover:bg-secondary/50 transition-colors cursor-pointer">
+                <div className="text-2xl mb-2">📱</div>
+                <div className="text-sm font-medium">Apps</div>
+                <div className="text-xs text-muted-foreground">Subscriptions</div>
+              </div>
+            </div>
+          </div>
+        </Card>
 
 
         {/* Birthday Form - Only show in personal mode */}
