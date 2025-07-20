@@ -8,6 +8,7 @@ import { QuickBirthdayEntry } from './QuickBirthdayEntry';
 import { BirthdayDisplay } from './BirthdayDisplay';
 import { useBirthdayStorage } from '@/hooks/useBirthdayStorage';
 import { celebrityBirthdays } from '@/data/celebrities';
+import { getCelebrityPhoto, getFallbackPhoto } from '@/utils/celebrityPhotoService';
 
 export interface Birthday {
   id: string;
@@ -190,17 +191,42 @@ export const BirthdayClock = () => {
                       </div>
                     </div>
                   ) : currentTimeIsValidDate && matchingBirthdays.length > 0 ? (
-                    matchingBirthdays[currentBirthdayIndex]?.photo ? (
-                      <img
-                        src={matchingBirthdays[currentBirthdayIndex].photo}
-                        alt={matchingBirthdays[currentBirthdayIndex].name}
-                        className="w-full h-full object-cover"
-                      />
-                    ) : (
-                      <div className="w-full h-full bg-gradient-to-br from-celebration to-celebration/70 flex items-center justify-center text-3xl md:text-5xl text-white font-bold">
-                        {matchingBirthdays[currentBirthdayIndex]?.name.charAt(0).toUpperCase()}
-                      </div>
-                    )
+                    (() => {
+                      const currentBirthday = matchingBirthdays[currentBirthdayIndex];
+                      // Use celebrity photo service for celebrities, original photo for personal contacts
+                      const photoUrl = celebrityMode 
+                        ? getCelebrityPhoto(currentBirthday.name) || getFallbackPhoto(currentBirthday.name)
+                        : currentBirthday?.photo;
+                      
+                      return photoUrl ? (
+                        <img
+                          src={photoUrl}
+                          alt={currentBirthday.name}
+                          className="w-full h-full object-cover"
+                          onError={(e) => {
+                            // Fallback to a different image if the original fails to load
+                            const target = e.target as HTMLImageElement;
+                            if (celebrityMode && !target.src.includes('unsplash')) {
+                              target.src = getFallbackPhoto(currentBirthday.name);
+                            } else {
+                              // Show initials as ultimate fallback
+                              target.style.display = 'none';
+                              const parent = target.parentElement;
+                              if (parent && !parent.querySelector('.fallback-initials')) {
+                                const fallbackDiv = document.createElement('div');
+                                fallbackDiv.className = 'fallback-initials w-full h-full bg-gradient-to-br from-celebration to-celebration/70 flex items-center justify-center text-3xl md:text-5xl text-white font-bold';
+                                fallbackDiv.textContent = currentBirthday.name.charAt(0).toUpperCase();
+                                parent.appendChild(fallbackDiv);
+                              }
+                            }
+                          }}
+                        />
+                      ) : (
+                        <div className="w-full h-full bg-gradient-to-br from-celebration to-celebration/70 flex items-center justify-center text-3xl md:text-5xl text-white font-bold">
+                          {currentBirthday?.name.charAt(0).toUpperCase()}
+                        </div>
+                      );
+                    })()
                   ) : (
                     <div className="w-full h-full bg-gradient-to-br from-primary/20 to-secondary/30 flex items-center justify-center">
                       <div className="text-center text-muted-foreground/50">

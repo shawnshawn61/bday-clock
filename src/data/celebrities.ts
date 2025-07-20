@@ -5,42 +5,42 @@ export const celebrityBirthdays: Birthday[] = [
     id: 'celebrity-1',
     name: 'Ice Spice',
     date: '01-01',
-    photo: 'https://images.unsplash.com/photo-1618160702438-9b02ab6515c9?w=400&h=400&fit=crop&crop=face',
+    photo: 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=400&h=600&fit=crop&crop=face',
     imdb: 'https://www.imdb.com/name/nm13003935/'
   },
   {
     id: 'celebrity-2',
     name: 'Morris Chestnut',
     date: '01-02',
-    photo: 'https://images.unsplash.com/photo-1535268647677-300dbf3d78d1?w=400&h=400&fit=crop&crop=face',
+    photo: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=600&fit=crop&crop=face',
     imdb: 'https://www.imdb.com/name/nm0156329/'
   },
   {
     id: 'celebrity-3',
     name: 'Mel Gibson',
     date: '01-03',
-    photo: 'https://images.unsplash.com/photo-1501286353178-1ec881214838?w=400&h=400&fit=crop&crop=face',
+    photo: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=600&fit=crop&crop=face',
     imdb: 'https://www.imdb.com/name/nm0000154/'
   },
   {
     id: 'celebrity-4',
     name: 'Dyan Cannon',
     date: '01-04',
-    photo: 'https://images.unsplash.com/photo-1618160702438-9b02ab6515c9?w=400&h=400&fit=crop&crop=face',
+    photo: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=600&fit=crop&crop=face',
     imdb: 'https://www.imdb.com/name/nm0001012/'
   },
   {
     id: 'celebrity-5',
     name: 'Bradley Cooper',
     date: '01-05',
-    photo: 'https://images.unsplash.com/photo-1535268647677-300dbf3d78d1?w=400&h=400&fit=crop&crop=face',
+    photo: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&h=600&fit=crop&crop=face',
     imdb: 'https://www.imdb.com/name/nm0177896/'
   },
   {
     id: 'celebrity-6',
     name: 'Norman Reedus',
     date: '01-06',
-    photo: 'https://images.unsplash.com/photo-1501286353178-1ec881214838?w=400&h=400&fit=crop&crop=face',
+    photo: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=400&h=600&fit=crop&crop=face',
     imdb: 'https://www.imdb.com/name/nm0005342/'
   },
   {
