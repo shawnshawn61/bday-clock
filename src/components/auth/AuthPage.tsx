@@ -91,7 +91,7 @@ export const AuthPage = () => {
         <CardHeader className="text-center">
           <CardTitle className="text-2xl font-bold">Bday Clock</CardTitle>
           <CardDescription>
-            Your personalized birthday clock experience
+            Time to Remember Bdays.
           </CardDescription>
         </CardHeader>
         

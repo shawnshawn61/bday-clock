@@ -131,7 +131,7 @@ export const BirthdayClock = () => {
             Bday Clock
           </h1>
           <p className="text-muted-foreground text-lg">
-            See friends the minute the time mirrors their bday month and day.
+            Time to Remember Bdays.
           </p>
         </div>
 
