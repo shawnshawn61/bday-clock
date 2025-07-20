@@ -91,7 +91,7 @@ export const AuthPage = () => {
         <CardHeader className="text-center">
           <CardTitle className="text-2xl font-bold">Bday Clock</CardTitle>
           <CardDescription>
-            Time to Remember Bdays.
+            Time To Remember Bdays.
           </CardDescription>
         </CardHeader>
         

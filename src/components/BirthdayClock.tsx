@@ -22,6 +22,7 @@ export const BirthdayClock = () => {
   const [celebrityMode, setCelebrityMode] = useState(false);
   const [useQuickEntry, setUseQuickEntry] = useState(false);
   const [giftMode, setGiftMode] = useState(false);
+  const [currentBirthdayIndex, setCurrentBirthdayIndex] = useState(0);
   const { birthdays, addBirthday, removeBirthday } = useBirthdayStorage();
 
   // Gift showcase data with curated items
@@ -70,17 +71,6 @@ export const BirthdayClock = () => {
     return () => clearInterval(timer);
   }, []);
 
-  // Rotate gift showcase every 8 seconds when in gift mode
-  useEffect(() => {
-    if (!giftMode) return;
-    
-    const giftTimer = setInterval(() => {
-      setCurrentGiftIndex(prev => (prev + 1) % giftShowcase.length);
-    }, 8000);
-
-    return () => clearInterval(giftTimer);
-  }, [giftMode, giftShowcase.length]);
-
   // Format current time as 12-hour format
   const currentTimeString = format(currentTime, 'h:mm a');
   const [hours, minutes] = format(currentTime, 'hh:mm').split(':').map(Number);
@@ -112,6 +102,31 @@ export const BirthdayClock = () => {
     const birthdayTimeFormat = `${month}-${day}`;
     return birthdayTimeFormat === timeAsDate;
   });
+
+  // Rotate gift showcase every 8 seconds when in gift mode
+  useEffect(() => {
+    if (!giftMode) return;
+    
+    const giftTimer = setInterval(() => {
+      setCurrentGiftIndex(prev => (prev + 1) % giftShowcase.length);
+    }, 8000);
+
+    return () => clearInterval(giftTimer);
+  }, [giftMode, giftShowcase.length]);
+
+  // Rotate through matching birthdays every 5 seconds when there are multiple
+  useEffect(() => {
+    if (matchingBirthdays.length <= 1) {
+      setCurrentBirthdayIndex(0);
+      return;
+    }
+    
+    const birthdayTimer = setInterval(() => {
+      setCurrentBirthdayIndex(prev => (prev + 1) % matchingBirthdays.length);
+    }, 5000);
+
+    return () => clearInterval(birthdayTimer);
+  }, [matchingBirthdays.length]);
   
   // Calculate countdown
   const totalValidDates = getValidDateCount();
@@ -131,7 +146,7 @@ export const BirthdayClock = () => {
             Bday Clock
           </h1>
           <p className="text-muted-foreground text-lg">
-            Time to Remember Bdays.
+            Time To Remember Bdays.
           </p>
         </div>
 
@@ -171,15 +186,15 @@ export const BirthdayClock = () => {
                       </div>
                     </div>
                   ) : currentTimeIsValidDate && matchingBirthdays.length > 0 ? (
-                    matchingBirthdays[0].photo ? (
+                    matchingBirthdays[currentBirthdayIndex]?.photo ? (
                       <img
-                        src={matchingBirthdays[0].photo}
-                        alt={matchingBirthdays[0].name}
+                        src={matchingBirthdays[currentBirthdayIndex].photo}
+                        alt={matchingBirthdays[currentBirthdayIndex].name}
                         className="w-full h-full object-cover"
                       />
                     ) : (
                       <div className="w-full h-full bg-gradient-to-br from-celebration to-celebration/70 flex items-center justify-center text-3xl md:text-5xl text-white font-bold">
-                        {matchingBirthdays[0].name.charAt(0).toUpperCase()}
+                        {matchingBirthdays[currentBirthdayIndex]?.name.charAt(0).toUpperCase()}
                       </div>
                     )
                   ) : (
@@ -216,24 +231,24 @@ export const BirthdayClock = () => {
               <div className="w-full text-center">
                 <div className="text-lg md:text-xl font-playfair font-medium text-foreground px-4">
                   It's{' '}
-                  {celebrityMode && matchingBirthdays[0].imdb ? (
+                  {celebrityMode && matchingBirthdays[currentBirthdayIndex]?.imdb ? (
                     <a 
-                      href={matchingBirthdays[0].imdb}
+                      href={matchingBirthdays[currentBirthdayIndex].imdb}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="text-celebration hover:text-celebration/80 transition-colors underline decoration-2 underline-offset-4"
                     >
-                      {matchingBirthdays[0].name}
+                      {matchingBirthdays[currentBirthdayIndex].name}
                     </a>
                   ) : !celebrityMode ? (
                     <a 
                       href={`sms:?body=Hiya, you popped up on Bday Clock at ${currentTimeString} and I just wanted to say hi.`}
                       className="text-celebration hover:text-celebration/80 transition-colors underline decoration-2 underline-offset-4"
                     >
-                      {matchingBirthdays[0].name}
+                      {matchingBirthdays[currentBirthdayIndex]?.name}
                     </a>
                   ) : (
-                    <span className="text-celebration">{matchingBirthdays[0].name}</span>
+                    <span className="text-celebration">{matchingBirthdays[currentBirthdayIndex]?.name}</span>
                   )}
                   {' '}O'clock! 🥳⏰
                 </div>
@@ -261,9 +276,28 @@ export const BirthdayClock = () => {
         </Card>
 
 
-        {/* Additional Birthday Celebration Display - Show when multiple birthdays */}
-        {currentTimeIsValidDate && matchingBirthdays.length > 1 && (
-          <BirthdayDisplay birthdays={matchingBirthdays.slice(1)} />
+        {/* Additional Birthday Celebration Display - Show all birthdays with slideshow indicator */}
+        {currentTimeIsValidDate && matchingBirthdays.length > 0 && (
+          <>
+            <BirthdayDisplay birthdays={matchingBirthdays} />
+            {matchingBirthdays.length > 1 && (
+              <div className="flex justify-center items-center gap-2">
+                <span className="text-sm text-muted-foreground">
+                  {currentBirthdayIndex + 1} of {matchingBirthdays.length}
+                </span>
+                <div className="flex gap-1">
+                  {matchingBirthdays.map((_, index) => (
+                    <div
+                      key={index}
+                      className={`w-2 h-2 rounded-full transition-colors ${
+                        index === currentBirthdayIndex ? 'bg-celebration' : 'bg-muted-foreground/30'
+                      }`}
+                    />
+                  ))}
+                </div>
+              </div>
+            )}
+          </>
         )}
 
 

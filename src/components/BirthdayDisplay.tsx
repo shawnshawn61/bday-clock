@@ -53,7 +53,7 @@ export const BirthdayDisplay = ({ birthdays }: BirthdayDisplayProps) => {
               </div>
               
               <div className="text-white font-bold text-lg mt-2 animate-pulse">
-                It's {birthday.name.split(' ')[0]} o'clock 🥳⏰
+                It's {birthday.name.split(' ')[0]} O'clock! 🥳⏰
               </div>
               
               <div className="mt-4 text-2xl">
