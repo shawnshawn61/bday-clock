@@ -199,10 +199,16 @@ export const BirthdayClock = () => {
                   ) : currentTimeIsValidDate && matchingBirthdays.length > 0 ? (
                     (() => {
                       const currentBirthday = matchingBirthdays[currentBirthdayIndex];
+                      console.log('DEBUG: currentBirthday:', currentBirthday);
+                      console.log('DEBUG: getCelebrityPhoto result:', celebrityMode ? getCelebrityPhoto(currentBirthday.name) : 'not in celebrity mode');
+                      console.log('DEBUG: currentBirthday.photo:', currentBirthday?.photo);
+                      
                       // Use celebrity photo service first for high-quality photos, then fallback
                       const photoUrl = celebrityMode 
                         ? getCelebrityPhoto(currentBirthday.name) || currentBirthday?.photo || getFallbackPhoto(currentBirthday.name)
                         : currentBirthday?.photo;
+                      
+                      console.log('DEBUG: Final photoUrl:', photoUrl);
                       
                       return photoUrl ? (
                         <img
