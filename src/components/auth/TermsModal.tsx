@@ -14,7 +14,7 @@ export const TermsModal = ({ open, onOpenChange, type }: TermsModalProps) => {
 Last updated: ${new Date().toLocaleDateString()}
 
 1. ACCEPTANCE OF TERMS
-By using Bday O'Clock, you agree to these terms and conditions.
+By using Bday Clock, you agree to these terms and conditions.
 
 2. DATA COLLECTION AND USE
 We collect and use your data to:

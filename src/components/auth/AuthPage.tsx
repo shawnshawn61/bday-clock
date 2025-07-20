@@ -89,7 +89,7 @@ export const AuthPage = () => {
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary/20 to-secondary/20 p-4">
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
-          <CardTitle className="text-2xl font-bold">Bday O'Clock</CardTitle>
+          <CardTitle className="text-2xl font-bold">Bday Clock</CardTitle>
           <CardDescription>
             Your personalized birthday clock experience
           </CardDescription>
