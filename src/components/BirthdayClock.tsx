@@ -97,6 +97,12 @@ export const BirthdayClock = () => {
   // Get the appropriate birthday list based on mode
   const activeBirthdays = celebrityMode ? celebrityBirthdays : birthdays;
   
+  // Debug logging for celebrity mode
+  console.log('Celebrity mode:', celebrityMode);
+  console.log('Active birthdays length:', activeBirthdays.length);
+  console.log('Celebrity birthdays length:', celebrityBirthdays.length);
+  console.log('Personal birthdays length:', birthdays.length);
+  
   // Find birthdays that match current time
   const matchingBirthdays = activeBirthdays.filter(birthday => {
     const [month, day] = birthday.date.split('-');
