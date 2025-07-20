@@ -142,9 +142,13 @@ export const BirthdayClock = () => {
       <div className="max-w-6xl mx-auto space-y-8">
         {/* Header */}
         <div className="text-center space-y-4">
-          <h1 className="text-4xl md:text-6xl font-bold text-foreground mb-2">
-            Bday Clock
-          </h1>
+          <div className="flex items-center justify-center mb-4">
+            <img 
+              src="/lovable-uploads/8903630c-9f11-485e-9baf-37ae1a7bde4f.png" 
+              alt="Bday Clock Logo" 
+              className="h-16 w-auto object-contain"
+            />
+          </div>
           <p className="text-muted-foreground text-lg">
             Time To Remember Bdays.
           </p>
