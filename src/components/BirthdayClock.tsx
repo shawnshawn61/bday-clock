@@ -330,6 +330,97 @@ export const BirthdayClock = () => {
           </>
         )}
 
+        {/* Gift Shop Sections */}
+        {celebrityMode ? (
+          /* eLux Shop for Celebrity Mode */
+          <Card className="p-6 bg-card/80 backdrop-blur-sm border-photo-frame">
+            <div className="text-center space-y-6">
+              <div>
+                <h2 className="text-2xl font-bold text-foreground mb-2">Bday Clock eLux Shop</h2>
+                <p className="text-muted-foreground italic">Last minute gifts.</p>
+              </div>
+              
+              <div className="grid grid-cols-2 gap-6">
+                <div className="text-center space-y-3">
+                  <div className="text-4xl">💎</div>
+                  <div>
+                    <h3 className="font-semibold text-foreground">Jewelry</h3>
+                    <p className="text-sm text-muted-foreground">Fine Jewelry</p>
+                  </div>
+                </div>
+                
+                <div className="text-center space-y-3">
+                  <div className="text-4xl">🏝️</div>
+                  <div>
+                    <h3 className="font-semibold text-foreground">Excursions</h3>
+                    <p className="text-sm text-muted-foreground">Travel Experiences</p>
+                  </div>
+                </div>
+                
+                <div className="text-center space-y-3">
+                  <div className="text-4xl">🏨</div>
+                  <div>
+                    <h3 className="font-semibold text-foreground">Luxury Hotels</h3>
+                    <p className="text-sm text-muted-foreground">Premium Stays</p>
+                  </div>
+                </div>
+                
+                <div className="text-center space-y-3">
+                  <div className="text-4xl">👜</div>
+                  <div>
+                    <h3 className="font-semibold text-foreground">Luxury Goods</h3>
+                    <p className="text-sm text-muted-foreground">Designer Items</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </Card>
+        ) : (
+          /* eGift Shop for Personal Mode */
+          <Card className="p-6 bg-card/80 backdrop-blur-sm border-photo-frame">
+            <div className="text-center space-y-6">
+              <div>
+                <h2 className="text-2xl font-bold text-foreground mb-2">Bday Clock eGift Shop</h2>
+                <p className="text-muted-foreground italic">Last minute gifts.</p>
+              </div>
+              
+              <div className="grid grid-cols-2 gap-6">
+                <div className="text-center space-y-3">
+                  <div className="text-4xl">🛍️</div>
+                  <div>
+                    <h3 className="font-semibold text-foreground">Retail</h3>
+                    <p className="text-sm text-muted-foreground">Gift Cards</p>
+                  </div>
+                </div>
+                
+                <div className="text-center space-y-3">
+                  <div className="text-4xl">🍽️</div>
+                  <div>
+                    <h3 className="font-semibold text-foreground">Dining</h3>
+                    <p className="text-sm text-muted-foreground">Restaurants</p>
+                  </div>
+                </div>
+                
+                <div className="text-center space-y-3">
+                  <div className="text-4xl">💆</div>
+                  <div>
+                    <h3 className="font-semibold text-foreground">Spa</h3>
+                    <p className="text-sm text-muted-foreground">Experiences</p>
+                  </div>
+                </div>
+                
+                <div className="text-center space-y-3">
+                  <div className="text-4xl">📱</div>
+                  <div>
+                    <h3 className="font-semibold text-foreground">Apps</h3>
+                    <p className="text-sm text-muted-foreground">Subscriptions</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </Card>
+        )}
+
 
         {/* Birthday Form - Only show in personal mode */}
         {!celebrityMode && (
