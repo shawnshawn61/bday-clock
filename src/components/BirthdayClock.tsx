@@ -306,8 +306,8 @@ export const BirthdayClock = () => {
         </Card>
 
 
-        {/* Additional Birthday Celebration Display - Show all birthdays with slideshow indicator */}
-        {currentTimeIsValidDate && matchingBirthdays.length > 0 && (
+        {/* Additional Birthday Celebration Display - Show all birthdays with slideshow indicator - Personal Mode Only */}
+        {!celebrityMode && currentTimeIsValidDate && matchingBirthdays.length > 0 && (
           <>
             <BirthdayDisplay birthdays={matchingBirthdays} />
             {matchingBirthdays.length > 1 && (
