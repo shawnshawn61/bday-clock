@@ -159,30 +159,36 @@ export const celebrityBirthdays: Birthday[] = [
   },
   {
     id: 'celebrity-27',
+    name: 'Patton Oswalt',
+    date: '01-27',
+    imdb: 'https://www.imdb.com/name/nm0652663/'
+  },
+  {
+    id: 'celebrity-28',
     name: 'Julia Lester',
     date: '01-28',
     imdb: 'https://www.imdb.com/name/nm7859267/'
   },
   {
-    id: 'celebrity-28',
+    id: 'celebrity-29',
     name: 'Oprah Winfrey',
     date: '01-29',
     imdb: 'https://www.imdb.com/name/nm0001856/'
   },
   {
-    id: 'celebrity-29',
+    id: 'celebrity-30',
     name: 'Phil Collins',
     date: '01-30',
     imdb: 'https://www.imdb.com/name/nm0172144/'
   },
   {
-    id: 'celebrity-30',
+    id: 'celebrity-31',
     name: 'Kerry Washington',
     date: '01-31',
     imdb: 'https://www.imdb.com/name/nm0913488/'
   },
   {
-    id: 'celebrity-31',
+    id: 'celebrity-32',
     name: 'Harry Styles',
     date: '02-01',
     imdb: 'https://www.imdb.com/name/nm5077398/'
