@@ -174,80 +174,116 @@ export const BirthdayClock = () => {
                 </div>
               </div>
               
-              {/* Portrait Photo - Always present for consistent layout */}
+              {/* Portrait Photo(s) - Multiple frames in personal mode, single in celebrity mode */}
               <div className="flex-shrink-0 relative">
-                <div className="w-24 md:w-36 aspect-[3/4] rounded-xl overflow-hidden border-4 border-photo-frame shadow-lg">
-                  {shouldShowGift ? (
-                    <div className="w-full h-full relative group">
-                      <img
-                        src={currentGift.image}
-                        alt={currentGift.title}
-                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                      <div className="absolute bottom-2 left-2 right-2 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                        <div className="text-xs font-medium truncate">{currentGift.title}</div>
-                        <div className="text-xs opacity-80 truncate">{currentGift.description}</div>
-                      </div>
-                    </div>
-                  ) : currentTimeIsValidDate && matchingBirthdays.length > 0 ? (
-                    (() => {
-                      const currentBirthday = matchingBirthdays[currentBirthdayIndex];
-                      // Use celebrity photo service for celebrities, original photo for personal contacts
-                      const photoUrl = celebrityMode 
-                        ? getCelebrityPhoto(currentBirthday.name) || getFallbackPhoto(currentBirthday.name)
-                        : currentBirthday?.photo;
-                      
-                      return photoUrl ? (
-                        <img
-                          src={photoUrl}
-                          alt={currentBirthday.name}
-                          className="w-full h-full object-cover"
-                          onError={(e) => {
-                            // Fallback to a different image if the original fails to load
-                            const target = e.target as HTMLImageElement;
-                            if (celebrityMode && !target.src.includes('unsplash')) {
-                              target.src = getFallbackPhoto(currentBirthday.name);
-                            } else {
-                              // Show initials as ultimate fallback
-                              target.style.display = 'none';
-                              const parent = target.parentElement;
-                              if (parent && !parent.querySelector('.fallback-initials')) {
-                                const fallbackDiv = document.createElement('div');
-                                fallbackDiv.className = 'fallback-initials w-full h-full bg-gradient-to-br from-celebration to-celebration/70 flex items-center justify-center text-3xl md:text-5xl text-white font-bold';
-                                fallbackDiv.textContent = currentBirthday.name.charAt(0).toUpperCase();
-                                parent.appendChild(fallbackDiv);
-                              }
-                            }
-                          }}
-                        />
-                      ) : (
-                        <div className="w-full h-full bg-gradient-to-br from-celebration to-celebration/70 flex items-center justify-center text-3xl md:text-5xl text-white font-bold">
-                          {currentBirthday?.name.charAt(0).toUpperCase()}
+                {!celebrityMode && currentTimeIsValidDate && matchingBirthdays.length > 1 ? (
+                  // Multiple friend frames for personal mode
+                  <div className="flex gap-2 md:gap-3">
+                    {matchingBirthdays.map((birthday, index) => (
+                      <div key={birthday.id} className="relative">
+                        <div className="w-20 md:w-28 aspect-[3/4] rounded-xl overflow-hidden border-4 border-photo-frame shadow-lg">
+                          {birthday?.photo ? (
+                            <img
+                              src={birthday.photo}
+                              alt={birthday.name}
+                              className="w-full h-full object-cover"
+                              onError={(e) => {
+                                // Show initials as fallback
+                                const target = e.target as HTMLImageElement;
+                                target.style.display = 'none';
+                                const parent = target.parentElement;
+                                if (parent && !parent.querySelector('.fallback-initials')) {
+                                  const fallbackDiv = document.createElement('div');
+                                  fallbackDiv.className = 'fallback-initials w-full h-full bg-gradient-to-br from-celebration to-celebration/70 flex items-center justify-center text-2xl md:text-4xl text-white font-bold';
+                                  fallbackDiv.textContent = birthday.name.charAt(0).toUpperCase();
+                                  parent.appendChild(fallbackDiv);
+                                }
+                              }}
+                            />
+                          ) : (
+                            <div className="w-full h-full bg-gradient-to-br from-celebration to-celebration/70 flex items-center justify-center text-2xl md:text-4xl text-white font-bold">
+                              {birthday?.name.charAt(0).toUpperCase()}
+                            </div>
+                          )}
                         </div>
-                      );
-                    })()
-                  ) : (
-                    <div className="w-full h-full bg-gradient-to-br from-primary/20 to-secondary/30 flex items-center justify-center">
-                      <div className="text-center text-muted-foreground/50">
-                        <div className="text-2xl md:text-4xl mb-1">🎂</div>
-                        <button 
-                          onClick={() => {
-                            const formSection = document.querySelector('[data-form-section]');
-                            formSection?.scrollIntoView({ behavior: 'smooth' });
-                            setTimeout(() => {
-                              const nameInput = document.querySelector('input[placeholder*="name"], input[name="name"]') as HTMLInputElement;
-                              nameInput?.focus();
-                            }, 300);
-                          }}
-                          className="text-xs font-medium text-primary hover:text-primary/80 transition-colors underline"
-                        >
-                          Add Friend
-                        </button>
                       </div>
-                    </div>
-                  )}
-                </div>
+                    ))}
+                  </div>
+                ) : (
+                  // Single frame for celebrity mode or single friend
+                  <div className="w-24 md:w-36 aspect-[3/4] rounded-xl overflow-hidden border-4 border-photo-frame shadow-lg">
+                    {shouldShowGift ? (
+                      <div className="w-full h-full relative group">
+                        <img
+                          src={currentGift.image}
+                          alt={currentGift.title}
+                          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                        <div className="absolute bottom-2 left-2 right-2 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                          <div className="text-xs font-medium truncate">{currentGift.title}</div>
+                          <div className="text-xs opacity-80 truncate">{currentGift.description}</div>
+                        </div>
+                      </div>
+                    ) : currentTimeIsValidDate && matchingBirthdays.length > 0 ? (
+                      (() => {
+                        const currentBirthday = matchingBirthdays[currentBirthdayIndex];
+                        // Use celebrity photo service for celebrities, original photo for personal contacts
+                        const photoUrl = celebrityMode 
+                          ? getCelebrityPhoto(currentBirthday.name) || getFallbackPhoto(currentBirthday.name)
+                          : currentBirthday?.photo;
+                        
+                        return photoUrl ? (
+                          <img
+                            src={photoUrl}
+                            alt={currentBirthday.name}
+                            className="w-full h-full object-cover"
+                            onError={(e) => {
+                              // Fallback to a different image if the original fails to load
+                              const target = e.target as HTMLImageElement;
+                              if (celebrityMode && !target.src.includes('unsplash')) {
+                                target.src = getFallbackPhoto(currentBirthday.name);
+                              } else {
+                                // Show initials as ultimate fallback
+                                target.style.display = 'none';
+                                const parent = target.parentElement;
+                                if (parent && !parent.querySelector('.fallback-initials')) {
+                                  const fallbackDiv = document.createElement('div');
+                                  fallbackDiv.className = 'fallback-initials w-full h-full bg-gradient-to-br from-celebration to-celebration/70 flex items-center justify-center text-3xl md:text-5xl text-white font-bold';
+                                  fallbackDiv.textContent = currentBirthday.name.charAt(0).toUpperCase();
+                                  parent.appendChild(fallbackDiv);
+                                }
+                              }
+                            }}
+                          />
+                        ) : (
+                          <div className="w-full h-full bg-gradient-to-br from-celebration to-celebration/70 flex items-center justify-center text-3xl md:text-5xl text-white font-bold">
+                            {currentBirthday?.name.charAt(0).toUpperCase()}
+                          </div>
+                        );
+                      })()
+                    ) : (
+                      <div className="w-full h-full bg-gradient-to-br from-primary/20 to-secondary/30 flex items-center justify-center">
+                        <div className="text-center text-muted-foreground/50">
+                          <div className="text-2xl md:text-4xl mb-1">🎂</div>
+                          <button 
+                            onClick={() => {
+                              const formSection = document.querySelector('[data-form-section]');
+                              formSection?.scrollIntoView({ behavior: 'smooth' });
+                              setTimeout(() => {
+                                const nameInput = document.querySelector('input[placeholder*="name"], input[name="name"]') as HTMLInputElement;
+                                nameInput?.focus();
+                              }, 300);
+                            }}
+                            className="text-xs font-medium text-primary hover:text-primary/80 transition-colors underline"
+                          >
+                            Add Friend
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
                 
                 {/* Countdown counter */}
                 <div className="absolute -bottom-2 -right-2 text-xs text-muted-foreground/60 font-mono">
