@@ -151,7 +151,7 @@ export const BirthdayClock = () => {
             />
           </div>
           <p className="text-muted-foreground text-lg">
-            Time To Remember Bdays.
+            Time to remember bdays
           </p>
         </div>
 
