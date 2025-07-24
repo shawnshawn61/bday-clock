@@ -2169,7 +2169,8 @@ export const celebrityBirthdays: Birthday[] = [
     id: 'celebrity-359',
     name: 'Annie Lennox',
     date: '12-25',
-    imdb: 'https://www.imdb.com/name/nm0503334/'
+    wikipedia: 'https://en.wikipedia.org/wiki/Annie_Lennox',
+    profession: 'musician'
   },
   {
     id: 'celebrity-360',

@@ -17,7 +17,10 @@ export interface Birthday {
   name: string;
   date: string; // MM-DD format
   photo?: string;
-  imdb?: string;
+  relationship?: string;
+  imdb?: string; // For celebrities
+  wikipedia?: string; // For non-actors (musicians, politicians, etc.)
+  profession?: string; // 'actor', 'musician', 'politician', etc.
 }
 
 export const BirthdayClock = () => {
@@ -338,14 +341,17 @@ export const BirthdayClock = () => {
                   It's{' '}
                   {celebrityMode && matchingBirthdays[currentBirthdayIndex]?.imdb ? (
                     <a 
-                      href={matchingBirthdays[currentBirthdayIndex].imdb}
+                      href={matchingBirthdays[currentBirthdayIndex].wikipedia || matchingBirthdays[currentBirthdayIndex].imdb} 
                       target="_blank"
                       rel="noopener noreferrer"
                       className="text-celebration hover:text-celebration/80 transition-colors underline decoration-2 underline-offset-4"
                       onClick={() => {
-                        console.log('IMDb link clicked:', {
-                          celebrity: matchingBirthdays[currentBirthdayIndex].name,
-                          imdbLink: matchingBirthdays[currentBirthdayIndex].imdb,
+                        const currentCelebrity = matchingBirthdays[currentBirthdayIndex];
+                        console.log('Link clicked:', {
+                          celebrity: currentCelebrity.name,
+                          linkType: currentCelebrity.wikipedia ? 'Wikipedia' : 'IMDb',
+                          url: currentCelebrity.wikipedia || currentCelebrity.imdb,
+                          profession: currentCelebrity.profession,
                           index: currentBirthdayIndex
                         });
                       }}
