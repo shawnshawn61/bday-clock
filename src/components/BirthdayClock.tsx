@@ -473,37 +473,57 @@ export const BirthdayClock = () => {
               </div>
               
               <div className="grid grid-cols-2 gap-6">
-                <div className="text-center space-y-3">
-                  <div className="text-4xl">🛍️</div>
+                <a 
+                  href="https://www.giftcard.com/category/wellness" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="text-center space-y-3 p-4 rounded-lg hover:bg-secondary/50 transition-colors"
+                >
+                  <div className="text-4xl">🧘</div>
                   <div>
-                    <h3 className="font-semibold text-foreground">Retail</h3>
+                    <h3 className="font-semibold text-foreground">Wellness</h3>
                     <p className="text-sm text-muted-foreground">Gift Cards</p>
                   </div>
-                </div>
+                </a>
                 
-                <div className="text-center space-y-3">
-                  <div className="text-4xl">🍽️</div>
+                <a 
+                  href="https://www.giftcard.com/category/clothing" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="text-center space-y-3 p-4 rounded-lg hover:bg-secondary/50 transition-colors"
+                >
+                  <div className="text-4xl">👕</div>
                   <div>
-                    <h3 className="font-semibold text-foreground">Dining</h3>
-                    <p className="text-sm text-muted-foreground">Restaurants</p>
+                    <h3 className="font-semibold text-foreground">Clothing</h3>
+                    <p className="text-sm text-muted-foreground">Gift Cards</p>
                   </div>
-                </div>
+                </a>
                 
-                <div className="text-center space-y-3">
-                  <div className="text-4xl">💆</div>
+                <a 
+                  href="https://www.giftcard.com/category/food-delivery" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="text-center space-y-3 p-4 rounded-lg hover:bg-secondary/50 transition-colors"
+                >
+                  <div className="text-4xl">🚚</div>
                   <div>
-                    <h3 className="font-semibold text-foreground">Spa</h3>
-                    <p className="text-sm text-muted-foreground">Experiences</p>
+                    <h3 className="font-semibold text-foreground">Food Delivery</h3>
+                    <p className="text-sm text-muted-foreground">Gift Cards</p>
                   </div>
-                </div>
+                </a>
                 
-                <div className="text-center space-y-3">
-                  <div className="text-4xl">📱</div>
+                <a 
+                  href="https://www.giftcard.com/category/gaming" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="text-center space-y-3 p-4 rounded-lg hover:bg-secondary/50 transition-colors"
+                >
+                  <div className="text-4xl">🎮</div>
                   <div>
-                    <h3 className="font-semibold text-foreground">Apps</h3>
-                    <p className="text-sm text-muted-foreground">Subscriptions</p>
+                    <h3 className="font-semibold text-foreground">Gaming</h3>
+                    <p className="text-sm text-muted-foreground">Gift Cards</p>
                   </div>
-                </div>
+                </a>
               </div>
             </div>
           </Card>
