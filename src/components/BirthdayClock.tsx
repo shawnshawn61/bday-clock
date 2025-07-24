@@ -494,32 +494,28 @@ export const BirthdayClock = () => {
                 <div className="flex flex-col items-center gap-2">
                   <Button
                     onClick={async () => {
-                      console.log('Auto Fill button clicked!');
                       const message = `Hey, Add your name, birthday and photo to my BdayClock. When the time matches your birthday, your face will pop up on my clock. It takes less than two minutes at www.bdayclock.com/${currentSlug}`;
-                      console.log('Message created:', message);
                       
                       try {
                         await navigator.clipboard.writeText(message);
-                        console.log('Message copied to clipboard');
                         
-                        // Try to open SMS app with the message
+                        // Always show the message since SMS opening is unreliable
+                        alert(`✅ Message copied to clipboard!\n\nPaste this in your messaging app:\n\n"${message}"\n\nOr manually open your SMS app and paste the message.`);
+                        
+                        // Still try to open SMS as a convenience, but don't rely on it
                         const encodedMessage = encodeURIComponent(message);
                         const smsUrl = `sms:?&body=${encodedMessage}`;
-                        console.log('SMS URL:', smsUrl);
+                        setTimeout(() => {
+                          try {
+                            window.open(smsUrl, '_blank');
+                          } catch (e) {
+                            // Silent fail if SMS doesn't work
+                          }
+                        }, 100);
                         
-                        // For mobile devices, try to open SMS app
-                        if (/Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
-                          console.log('Mobile device detected, opening SMS app');
-                          window.location.href = smsUrl;
-                        } else {
-                          console.log('Desktop detected, showing alert');
-                          // For desktop, show the copied message
-                          alert('Message copied to clipboard! Paste it in your messaging app.');
-                        }
                       } catch (err) {
-                        console.error('Error in Auto Fill:', err);
                         // Fallback if clipboard API fails
-                        alert(`Copy this message to send to friends:\n\n${message}`);
+                        alert(`Copy this message to send to friends:\n\n"${message}"`);
                       }
                     }}
                     variant="outline"
