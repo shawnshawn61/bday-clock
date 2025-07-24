@@ -3,10 +3,12 @@ import { format } from 'date-fns';
 import { Card } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
+import { Button } from '@/components/ui/button';
 import { BirthdayForm } from './BirthdayForm';
 import { QuickBirthdayEntry } from './QuickBirthdayEntry';
 import { BirthdayDisplay } from './BirthdayDisplay';
 import { useBirthdayStorage } from '@/hooks/useBirthdayStorage';
+import { usePersonalPage } from '@/hooks/usePersonalPage';
 import { celebrityBirthdays } from '@/data/celebrities';
 import { getCelebrityPhoto, getFallbackPhoto } from '@/utils/celebrityPhotoService';
 
@@ -25,6 +27,7 @@ export const BirthdayClock = () => {
   const [giftMode, setGiftMode] = useState(false);
   const [currentBirthdayIndex, setCurrentBirthdayIndex] = useState(0);
   const { birthdays, addBirthday, removeBirthday } = useBirthdayStorage();
+  const { currentSlug } = usePersonalPage();
 
   // Gift showcase data with curated items
   const giftShowcase = [
@@ -461,8 +464,8 @@ export const BirthdayClock = () => {
         {/* Birthday Form - Only show in personal mode */}
         {!celebrityMode && (
           <div className="space-y-4" data-form-section>
-            {/* Entry Mode Toggle */}
-            <div className="flex justify-center">
+            {/* Entry Mode Toggle and Auto Fill */}
+            <div className="flex flex-col items-center gap-4">
               <div className="flex items-center gap-2 p-1 bg-secondary/50 rounded-lg">
                 <button
                   onClick={() => setUseQuickEntry(true)}
@@ -485,6 +488,26 @@ export const BirthdayClock = () => {
                   📝 Detailed Form
                 </button>
               </div>
+              
+              {/* Auto Fill Section */}
+              {currentSlug && (
+                <div className="flex flex-col items-center gap-2">
+                  <Button
+                    onClick={() => {
+                      const message = `Hey, Add your name, birthday and photo to my BdayClock. When the time matches your birthday, your face will pop up on my clock. It takes less than two minutes at www.bdayclock.com/${currentSlug}`;
+                      const encodedMessage = encodeURIComponent(message);
+                      window.open(`sms:?&body=${encodedMessage}`, '_self');
+                    }}
+                    variant="outline"
+                    className="px-4 py-2"
+                  >
+                    📱 Auto Fill
+                  </Button>
+                  <p className="text-xs text-muted-foreground text-center max-w-xs">
+                    Get friends to add themselves to your BdayClock
+                  </p>
+                </div>
+              )}
             </div>
             
             {/* Show appropriate form */}
