@@ -58,7 +58,7 @@ export const QuickBirthdayEntry = ({ onAddBirthday }: QuickBirthdayEntryProps) =
     if (!parsed) {
       toast({
         title: "Invalid Format",
-        description: "Use format: Name MM/DD (e.g., 'John 12/25')",
+        description: "Use format: Name M/D (e.g., 'John 1/25' or 'Sarah 12/3')",
         variant: "destructive",
       });
       return;
@@ -114,7 +114,7 @@ export const QuickBirthdayEntry = ({ onAddBirthday }: QuickBirthdayEntryProps) =
     if (results.failed.length > 0) {
       toast({
         title: `${results.failed.length} Failed`,
-        description: "Check format: Name MM/DD",
+        description: "Check format: Name M/D (like 'John 1/25')",
         variant: "destructive",
       });
     }
@@ -184,14 +184,14 @@ export const QuickBirthdayEntry = ({ onAddBirthday }: QuickBirthdayEntryProps) =
               value={quickEntry}
               onChange={(e) => setQuickEntry(e.target.value)}
               onKeyDown={handleKeyDown}
-              placeholder="Sarah 03/15"
+              placeholder="Sarah 1/15"
               className="bg-input border-border text-foreground text-lg font-mono"
               autoComplete="off"
             />
             <div className="text-xs text-muted-foreground flex flex-wrap gap-2">
-              <span>• Format: Name MM/DD</span>
+              <span>• Format: Name M/D or MM/DD</span>
               <span>• Press Enter to add</span>
-              <span>• Example: "Mike 07/22"</span>
+              <span>• Example: "Mike 7/22" or "Sarah 12/3"</span>
             </div>
           </div>
           
@@ -214,16 +214,16 @@ export const QuickBirthdayEntry = ({ onAddBirthday }: QuickBirthdayEntryProps) =
               ref={batchInputRef}
               value={batchEntry}
               onChange={(e) => setBatchEntry(e.target.value)}
-              placeholder={`Sarah 03/15
-Mike 07/22
-Emma 11/08
-David 12/03`}
+              placeholder={`Sarah 1/15
+Mike 7/22
+Emma 11/8
+David 12/3`}
               className="bg-input border-border text-foreground font-mono min-h-[120px]"
               autoComplete="off"
             />
             <div className="text-xs text-muted-foreground">
               <span>• One birthday per line</span>
-              <span className="ml-3">• Format: Name MM/DD</span>
+              <span className="ml-3">• Format: Name M/D or MM/DD</span>
               <span className="ml-3">• Invalid entries will be skipped</span>
             </div>
           </div>
@@ -246,7 +246,7 @@ David 12/03`}
         </h4>
         <div className="text-sm text-muted-foreground space-y-1">
           <p>1. Open Facebook → Events → Birthdays</p>
-          <p>2. See someone's birthday? Type "John 12/25" here</p>
+          <p>2. See someone's birthday? Type "John 1/25" here</p>
           <p>3. Press Enter to add and continue</p>
           <p>4. For bulk: Copy multiple and paste in Batch mode</p>
         </div>
