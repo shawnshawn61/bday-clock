@@ -493,10 +493,26 @@ export const BirthdayClock = () => {
               {currentSlug && (
                 <div className="flex flex-col items-center gap-2">
                   <Button
-                    onClick={() => {
+                    onClick={async () => {
                       const message = `Hey, Add your name, birthday and photo to my BdayClock. When the time matches your birthday, your face will pop up on my clock. It takes less than two minutes at www.bdayclock.com/${currentSlug}`;
-                      const encodedMessage = encodeURIComponent(message);
-                      window.open(`sms:?&body=${encodedMessage}`, '_self');
+                      
+                      try {
+                        await navigator.clipboard.writeText(message);
+                        // Try to open SMS app with the message
+                        const encodedMessage = encodeURIComponent(message);
+                        const smsUrl = `sms:?&body=${encodedMessage}`;
+                        
+                        // For mobile devices, try to open SMS app
+                        if (/Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+                          window.location.href = smsUrl;
+                        } else {
+                          // For desktop, show the copied message
+                          alert('Message copied to clipboard! Paste it in your messaging app.');
+                        }
+                      } catch (err) {
+                        // Fallback if clipboard API fails
+                        alert(`Copy this message to send to friends:\n\n${message}`);
+                      }
                     }}
                     variant="outline"
                     className="px-4 py-2"
