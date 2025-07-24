@@ -77,7 +77,7 @@ export const BirthdayClock = () => {
 
   // Format current time as 12-hour format
   const currentTimeString = format(currentTime, 'h:mm a');
-  const [hours, minutes] = format(currentTime, 'hh:mm').split(':').map(Number);
+  const [hours, minutes] = format(currentTime, 'HH:mm').split(':').map(Number);
   
   // Convert time to date format (Hours:Minutes -> MM/DD)
   // Hours become Month, Minutes become Day
