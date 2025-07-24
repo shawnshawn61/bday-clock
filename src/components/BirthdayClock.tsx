@@ -75,9 +75,22 @@ export const BirthdayClock = () => {
     return () => clearInterval(timer);
   }, []);
 
+  // Add test time override - click on time to cycle through test times
+  const [testMode, setTestMode] = useState(false);
+  const [testTimeIndex, setTestTimeIndex] = useState(0);
+  const testTimes = [
+    { hours: 1, minutes: 23, label: '1:23 AM' },
+    { hours: 13, minutes: 23, label: '1:23 PM' },
+    { hours: 1, minutes: 1, label: '1:01 AM' },
+    { hours: 7, minutes: 22, label: '7:22 AM' },
+    { hours: 12, minutes: 25, label: '12:25 PM' }
+  ];
+
   // Format current time as 12-hour format
   const currentTimeString = format(currentTime, 'h:mm a');
-  const [hours, minutes] = format(currentTime, 'HH:mm').split(':').map(Number);
+  const actualTime = format(currentTime, 'HH:mm').split(':').map(Number);
+  const testTime = testTimes[testTimeIndex];
+  const [hours, minutes] = testMode ? [testTime.hours, testTime.minutes] : actualTime;
   
   // Convert time to date format (Hours:Minutes -> MM/DD)
   // Hours become Month, Minutes become Day
@@ -168,13 +181,29 @@ export const BirthdayClock = () => {
               {/* Large Time Display */}
               <div className="text-center">
                 <div className="flex items-baseline gap-2">
-                  <span className="text-5xl md:text-7xl font-mono font-bold text-celebration animate-clock-pulse leading-none">
-                    {format(currentTime, 'h:mm')}
-                  </span>
+                  <button
+                    onClick={() => {
+                      if (testMode) {
+                        setTestTimeIndex((prev) => (prev + 1) % testTimes.length);
+                      } else {
+                        setTestMode(true);
+                      }
+                    }}
+                    onDoubleClick={() => setTestMode(false)}
+                    className="text-5xl md:text-7xl font-mono font-bold text-celebration animate-clock-pulse leading-none hover:opacity-80 transition-opacity cursor-pointer"
+                    title={testMode ? `Test Mode: ${testTime.label} (click to cycle, double-click to exit)` : "Click to enter test mode"}
+                  >
+                    {testMode ? `${testTime.hours > 12 ? testTime.hours - 12 : testTime.hours === 0 ? 12 : testTime.hours}:${testTime.minutes.toString().padStart(2, '0')}` : format(currentTime, 'h:mm')}
+                  </button>
                   <span className="text-lg md:text-xl font-mono text-muted-foreground self-end mb-1 md:mb-2">
-                    {format(currentTime, 'a')}
+                    {testMode ? (testTime.hours >= 12 ? 'PM' : 'AM') : format(currentTime, 'a')}
                   </span>
                 </div>
+                {testMode && (
+                  <div className="text-xs text-muted-foreground mt-1">
+                    Test Mode: {testTime.label} (double-click time to exit)
+                  </div>
+                )}
               </div>
               
               {/* Portrait Photo(s) - Multiple frames in personal mode, single in celebrity mode */}
@@ -231,6 +260,13 @@ export const BirthdayClock = () => {
                     ) : currentTimeIsValidDate && matchingBirthdays.length > 0 ? (
                       (() => {
                         const currentBirthday = matchingBirthdays[currentBirthdayIndex];
+                        console.log('Celebrity mode debug:', {
+                          celebrityMode,
+                          currentBirthday: currentBirthday?.name,
+                          currentBirthdayIndex,
+                          totalMatching: matchingBirthdays.length,
+                          photoFromService: celebrityMode ? getCelebrityPhoto(currentBirthday.name) : 'N/A'
+                        });
                         // Use celebrity photo service for celebrities, original photo for personal contacts
                         const photoUrl = celebrityMode 
                           ? getCelebrityPhoto(currentBirthday.name) || getFallbackPhoto(currentBirthday.name)
@@ -306,6 +342,13 @@ export const BirthdayClock = () => {
                       target="_blank"
                       rel="noopener noreferrer"
                       className="text-celebration hover:text-celebration/80 transition-colors underline decoration-2 underline-offset-4"
+                      onClick={() => {
+                        console.log('IMDb link clicked:', {
+                          celebrity: matchingBirthdays[currentBirthdayIndex].name,
+                          imdbLink: matchingBirthdays[currentBirthdayIndex].imdb,
+                          index: currentBirthdayIndex
+                        });
+                      }}
                     >
                       {matchingBirthdays[currentBirthdayIndex].name}
                     </a>
