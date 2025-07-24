@@ -494,22 +494,30 @@ export const BirthdayClock = () => {
                 <div className="flex flex-col items-center gap-2">
                   <Button
                     onClick={async () => {
+                      console.log('Auto Fill button clicked!');
                       const message = `Hey, Add your name, birthday and photo to my BdayClock. When the time matches your birthday, your face will pop up on my clock. It takes less than two minutes at www.bdayclock.com/${currentSlug}`;
+                      console.log('Message created:', message);
                       
                       try {
                         await navigator.clipboard.writeText(message);
+                        console.log('Message copied to clipboard');
+                        
                         // Try to open SMS app with the message
                         const encodedMessage = encodeURIComponent(message);
                         const smsUrl = `sms:?&body=${encodedMessage}`;
+                        console.log('SMS URL:', smsUrl);
                         
                         // For mobile devices, try to open SMS app
                         if (/Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+                          console.log('Mobile device detected, opening SMS app');
                           window.location.href = smsUrl;
                         } else {
+                          console.log('Desktop detected, showing alert');
                           // For desktop, show the copied message
                           alert('Message copied to clipboard! Paste it in your messaging app.');
                         }
                       } catch (err) {
+                        console.error('Error in Auto Fill:', err);
                         // Fallback if clipboard API fails
                         alert(`Copy this message to send to friends:\n\n${message}`);
                       }
