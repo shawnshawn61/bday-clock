@@ -474,7 +474,7 @@ export const BirthdayClock = () => {
               
               <div className="grid grid-cols-2 gap-6">
                 <a 
-                  href="https://www.giftcard.com/category/wellness" 
+                  href="https://www.giftcards.com/category/wellness" 
                   target="_blank" 
                   rel="noopener noreferrer"
                   className="text-center space-y-3 p-4 rounded-lg hover:bg-secondary/50 transition-colors"
@@ -487,7 +487,7 @@ export const BirthdayClock = () => {
                 </a>
                 
                 <a 
-                  href="https://www.giftcard.com/category/clothing" 
+                  href="https://www.giftcards.com/category/clothing" 
                   target="_blank" 
                   rel="noopener noreferrer"
                   className="text-center space-y-3 p-4 rounded-lg hover:bg-secondary/50 transition-colors"
@@ -500,7 +500,7 @@ export const BirthdayClock = () => {
                 </a>
                 
                 <a 
-                  href="https://www.giftcard.com/category/food-delivery" 
+                  href="https://www.giftcards.com/category/food-delivery" 
                   target="_blank" 
                   rel="noopener noreferrer"
                   className="text-center space-y-3 p-4 rounded-lg hover:bg-secondary/50 transition-colors"
@@ -513,7 +513,7 @@ export const BirthdayClock = () => {
                 </a>
                 
                 <a 
-                  href="https://www.giftcard.com/category/gaming" 
+                  href="https://www.giftcards.com/category/gaming" 
                   target="_blank" 
                   rel="noopener noreferrer"
                   className="text-center space-y-3 p-4 rounded-lg hover:bg-secondary/50 transition-colors"
