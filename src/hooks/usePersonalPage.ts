@@ -4,7 +4,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 export interface PersonalPageData {
   slug: string;
   firstName: string;
-  lastInitial: string;
+  lastName: string;
   birthday: string; // MMDD format
 }
 
@@ -34,8 +34,8 @@ export const usePersonalPage = () => {
     }
   }, [userSlug, navigate]);
 
-  const generateSlug = (firstName: string, lastInitial: string, birthday: string) => {
-    const baseSlug = `${firstName.toLowerCase()}${lastInitial.toLowerCase()}${birthday}`;
+  const generateSlug = (firstName: string, lastName: string, birthday: string) => {
+    const baseSlug = `${firstName.toLowerCase()}${lastName.toLowerCase()}${birthday}`;
     let finalSlug = baseSlug;
     let counter = 2;
     
@@ -48,12 +48,12 @@ export const usePersonalPage = () => {
     return finalSlug;
   };
 
-  const createPersonalPage = (firstName: string, lastInitial: string, birthday: string) => {
-    const slug = generateSlug(firstName, lastInitial, birthday);
+  const createPersonalPage = (firstName: string, lastName: string, birthday: string) => {
+    const slug = generateSlug(firstName, lastName, birthday);
     const personalData: PersonalPageData = {
       slug,
       firstName,
-      lastInitial,
+      lastName,
       birthday
     };
     

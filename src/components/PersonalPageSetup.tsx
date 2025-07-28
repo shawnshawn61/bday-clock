@@ -3,22 +3,23 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 interface PersonalPageSetupProps {
-  onSetup: (firstName: string, lastInitial: string, birthday: string) => void;
+  onSetup: (firstName: string, lastName: string, birthday: string) => void;
 }
 
 export const PersonalPageSetup = ({ onSetup }: PersonalPageSetupProps) => {
   const [firstName, setFirstName] = useState('');
-  const [lastInitial, setLastInitial] = useState('');
+  const [lastName, setLastName] = useState('');
   const [month, setMonth] = useState('');
   const [day, setDay] = useState('');
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (firstName && lastInitial && month && day) {
+    if (firstName && lastName && month && day) {
       const birthday = `${month.padStart(2, '0')}${day.padStart(2, '0')}`;
-      onSetup(firstName, lastInitial, birthday);
+      onSetup(firstName, lastName, birthday);
     }
   };
 
@@ -28,7 +29,7 @@ export const PersonalPageSetup = ({ onSetup }: PersonalPageSetupProps) => {
         <CardHeader className="text-center">
           <CardTitle className="text-2xl font-bold">Create Your Personal Clock</CardTitle>
           <CardDescription>
-            Get your unique URL: bdayclock.com/{firstName.toLowerCase()}{lastInitial.toLowerCase()}{month.padStart(2, '0')}{day.padStart(2, '0')}
+            Get your unique URL: bdayclock.com/{firstName.toLowerCase()}{lastName.toLowerCase()}{month.padStart(2, '0')}{day.padStart(2, '0')}
           </CardDescription>
         </CardHeader>
         
@@ -45,12 +46,11 @@ export const PersonalPageSetup = ({ onSetup }: PersonalPageSetupProps) => {
             </div>
             
             <div className="space-y-2">
-              <Label htmlFor="lastInitial">Last Initial</Label>
+              <Label htmlFor="lastName">Last Name</Label>
               <Input
-                id="lastInitial"
-                value={lastInitial}
-                onChange={(e) => setLastInitial(e.target.value.slice(0, 1))}
-                maxLength={1}
+                id="lastName"
+                value={lastName}
+                onChange={(e) => setLastName(e.target.value)}
                 required
               />
             </div>
@@ -58,30 +58,44 @@ export const PersonalPageSetup = ({ onSetup }: PersonalPageSetupProps) => {
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="month">Birth Month</Label>
-                <Input
-                  id="month"
-                  type="number"
-                  min="1"
-                  max="12"
-                  value={month}
-                  onChange={(e) => setMonth(e.target.value)}
-                  placeholder="MM"
-                  required
-                />
+                <Select value={month} onValueChange={setMonth} required>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select month" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="01">January</SelectItem>
+                    <SelectItem value="02">February</SelectItem>
+                    <SelectItem value="03">March</SelectItem>
+                    <SelectItem value="04">April</SelectItem>
+                    <SelectItem value="05">May</SelectItem>
+                    <SelectItem value="06">June</SelectItem>
+                    <SelectItem value="07">July</SelectItem>
+                    <SelectItem value="08">August</SelectItem>
+                    <SelectItem value="09">September</SelectItem>
+                    <SelectItem value="10">October</SelectItem>
+                    <SelectItem value="11">November</SelectItem>
+                    <SelectItem value="12">December</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
               
               <div className="space-y-2">
                 <Label htmlFor="day">Birth Day</Label>
-                <Input
-                  id="day"
-                  type="number"
-                  min="1"
-                  max="31"
-                  value={day}
-                  onChange={(e) => setDay(e.target.value)}
-                  placeholder="DD"
-                  required
-                />
+                <Select value={day} onValueChange={setDay} required>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select day" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {Array.from({ length: 31 }, (_, i) => {
+                      const dayNum = (i + 1).toString().padStart(2, '0');
+                      return (
+                        <SelectItem key={dayNum} value={dayNum}>
+                          {dayNum}
+                        </SelectItem>
+                      );
+                    })}
+                  </SelectContent>
+                </Select>
               </div>
             </div>
             
