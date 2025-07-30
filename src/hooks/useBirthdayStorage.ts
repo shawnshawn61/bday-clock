@@ -1,10 +1,9 @@
 import { useState, useEffect } from 'react';
 import type { Birthday } from '@/components/BirthdayClock';
 
-const STORAGE_KEY = 'birthday-clock-data';
-
-export const useBirthdayStorage = () => {
+export const useBirthdayStorage = (userSlug?: string) => {
   const [birthdays, setBirthdays] = useState<Birthday[]>([]);
+  const STORAGE_KEY = userSlug ? `birthday-clock-data-${userSlug}` : 'birthday-clock-data';
 
   // Load birthdays from localStorage on mount
   useEffect(() => {

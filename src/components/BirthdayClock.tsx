@@ -29,8 +29,8 @@ export const BirthdayClock = () => {
   const [useQuickEntry, setUseQuickEntry] = useState(false);
   const [giftMode, setGiftMode] = useState(false);
   const [currentBirthdayIndex, setCurrentBirthdayIndex] = useState(0);
-  const { birthdays, addBirthday, removeBirthday } = useBirthdayStorage();
   const { currentSlug } = usePersonalPage();
+  const { birthdays, addBirthday, removeBirthday } = useBirthdayStorage(currentSlug);
 
   // Gift showcase data with curated items
   const giftShowcase = [
