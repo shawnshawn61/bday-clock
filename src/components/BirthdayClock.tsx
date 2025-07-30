@@ -97,7 +97,7 @@ export const BirthdayClock = () => {
   
   // For celebrity mode, use actual calendar date, for personal mode use time-as-date
   const timeAsDate = celebrityMode 
-    ? format(currentTime, 'MM-dd') // Real calendar date for celebrities
+    ? (testMode ? `${(testTime.hours).toString().padStart(2, '0')}-${testTime.minutes.toString().padStart(2, '0')}` : format(currentTime, 'MM-dd')) // Test time or real calendar date for celebrities
     : `${hours.toString().padStart(2, '0')}-${minutes.toString().padStart(2, '0')}`; // Time-based for personal
   
   // Calculate valid date combinations (exclude impossible dates like 01/32, 02/30, etc.)
