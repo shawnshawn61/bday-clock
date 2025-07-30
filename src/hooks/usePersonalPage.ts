@@ -64,10 +64,34 @@ export const usePersonalPage = () => {
     setNeedsSetup(false);
   };
 
+  const migrateSlug = (oldSlug: string, newSlug: string) => {
+    // Migrate personal page data
+    const oldPersonalData = localStorage.getItem(`personal-page-${oldSlug}`);
+    if (oldPersonalData) {
+      const personalData = JSON.parse(oldPersonalData);
+      personalData.slug = newSlug;
+      localStorage.setItem(`personal-page-${newSlug}`, JSON.stringify(personalData));
+      localStorage.removeItem(`personal-page-${oldSlug}`);
+    }
+    
+    // Migrate birthday data
+    const oldBirthdayData = localStorage.getItem(`birthday-clock-data-${oldSlug}`);
+    if (oldBirthdayData) {
+      localStorage.setItem(`birthday-clock-data-${newSlug}`, oldBirthdayData);
+      localStorage.removeItem(`birthday-clock-data-${oldSlug}`);
+    }
+    
+    // Update user's personal slug
+    localStorage.setItem('user-personal-slug', newSlug);
+    
+    navigate(`/${newSlug}`);
+  };
+
   return {
     isPersonalPage,
     needsSetup,
     currentSlug: userSlug,
-    createPersonalPage
+    createPersonalPage,
+    migrateSlug
   };
 };
