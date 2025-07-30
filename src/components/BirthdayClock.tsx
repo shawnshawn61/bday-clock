@@ -95,10 +95,8 @@ export const BirthdayClock = () => {
   const testTime = testTimes[testTimeIndex];
   const [hours, minutes] = testMode ? [testTime.hours, testTime.minutes] : actualTime;
   
-  // For celebrity mode, use actual calendar date, for personal mode use time-as-date
-  const timeAsDate = celebrityMode 
-    ? (testMode ? `${(testTime.hours).toString().padStart(2, '0')}-${testTime.minutes.toString().padStart(2, '0')}` : format(currentTime, 'MM-dd')) // Test time or real calendar date for celebrities
-    : `${hours.toString().padStart(2, '0')}-${minutes.toString().padStart(2, '0')}`; // Time-based for personal
+  // Use time-as-date for both modes, only use real calendar date for celebrity mode when explicitly showing today's celebrities
+  const timeAsDate = `${hours.toString().padStart(2, '0')}-${minutes.toString().padStart(2, '0')}`;;
   
   // Calculate valid date combinations (exclude impossible dates like 01/32, 02/30, etc.)
   const getValidDateCount = () => {
@@ -384,9 +382,13 @@ export const BirthdayClock = () => {
                           index: currentBirthdayIndex
                         });
                       }}
-                    >
-                      {matchingBirthdays[currentBirthdayIndex].name}
-                    </a>
+                     >
+                       {(() => {
+                         console.log('DISPLAYING NAME:', matchingBirthdays[currentBirthdayIndex]?.name);
+                         console.log('MATCHING BIRTHDAYS:', matchingBirthdays.map(b => ({ name: b.name, date: b.date })));
+                         return matchingBirthdays[currentBirthdayIndex]?.name || 'NO NAME FOUND';
+                       })()}
+                     </a>
                   ) : !celebrityMode ? (
                     <a 
                       href={`sms:?body=Hiya, you popped up on Bday Clock at ${currentTimeString} and I just wanted to say hi.`}
