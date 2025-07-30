@@ -95,9 +95,10 @@ export const BirthdayClock = () => {
   const testTime = testTimes[testTimeIndex];
   const [hours, minutes] = testMode ? [testTime.hours, testTime.minutes] : actualTime;
   
-  // Convert time to date format (Hours:Minutes -> MM/DD)
-  // Hours become Month, Minutes become Day
-  const timeAsDate = `${hours.toString().padStart(2, '0')}-${minutes.toString().padStart(2, '0')}`;
+  // For celebrity mode, use actual calendar date, for personal mode use time-as-date
+  const timeAsDate = celebrityMode 
+    ? format(currentTime, 'MM-dd') // Real calendar date for celebrities
+    : `${hours.toString().padStart(2, '0')}-${minutes.toString().padStart(2, '0')}`; // Time-based for personal
   
   // Calculate valid date combinations (exclude impossible dates like 01/32, 02/30, etc.)
   const getValidDateCount = () => {
@@ -111,7 +112,7 @@ export const BirthdayClock = () => {
     return month >= 1 && month <= 12 && day >= 1 && day <= daysInMonth[month - 1];
   };
   
-  const currentTimeIsValidDate = isValidDate(hours, minutes);
+  const currentTimeIsValidDate = celebrityMode || isValidDate(hours, minutes);
   
   
   // Get the appropriate birthday list based on mode
