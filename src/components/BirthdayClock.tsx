@@ -113,15 +113,25 @@ export const BirthdayClock = () => {
   
   const currentTimeIsValidDate = isValidDate(hours, minutes);
   
+  
   // Get the appropriate birthday list based on mode
   const activeBirthdays = celebrityMode ? celebrityBirthdays : birthdays;
+  
+  // Debug logging
+  console.log('Current user slug:', currentSlug);
+  console.log('All stored birthdays:', birthdays);
+  console.log('Current time as date:', timeAsDate);
+  console.log('Test mode:', testMode, testMode ? testTime : 'real time');
   
   // Find birthdays that match current time
   const matchingBirthdays = activeBirthdays.filter(birthday => {
     const [month, day] = birthday.date.split('-');
     const birthdayTimeFormat = `${month}-${day}`;
+    console.log(`Checking birthday ${birthday.name}: ${birthdayTimeFormat} vs ${timeAsDate}`);
     return birthdayTimeFormat === timeAsDate;
   });
+  
+  console.log('Matching birthdays found:', matchingBirthdays);
 
   // Rotate gift showcase every 8 seconds when in gift mode
   useEffect(() => {
