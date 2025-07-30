@@ -68,6 +68,7 @@ export const celebrityPhotos: Record<string, string> = {
   'Adele': 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7c/Adele_2016.jpg/400px-Adele_2016.jpg',
   'Tina Fey': 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f1/Tina_Fey_2012.jpg/400px-Tina_Fey_2012.jpg',
   'Cher': 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/Cher_2019.jpg/400px-Cher_2019.jpg',
+  'Sabrina Carpenter': 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8f/Sabrina_Carpenter_2016.jpg/400px-Sabrina_Carpenter_2016.jpg',
 
   // June celebrities  
   'Tom Holland': 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/Tom_Holland_2017.jpg/400px-Tom_Holland_2017.jpg',

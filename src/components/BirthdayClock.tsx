@@ -286,12 +286,12 @@ export const BirthdayClock = () => {
                           ? getCelebrityPhoto(currentBirthday.name) || getFallbackPhoto(currentBirthday.name)
                           : currentBirthday?.photo;
                         
-                        return photoUrl ? (
-                          <img
-                            src={photoUrl}
-                            alt={currentBirthday.name}
-                            className="w-full h-full object-cover"
-                            onError={(e) => {
+                         return photoUrl ? (
+                           <img
+                             src={photoUrl}
+                             alt={currentBirthday.name}
+                             className="w-full h-full object-cover"
+                             onError={(e) => {
                               // Fallback to a different image if the original fails to load
                               const target = e.target as HTMLImageElement;
                               if (celebrityMode && !target.src.includes('unsplash')) {
@@ -313,9 +313,23 @@ export const BirthdayClock = () => {
                           <div className="w-full h-full bg-gradient-to-br from-celebration to-celebration/70 flex items-center justify-center text-3xl md:text-5xl text-white font-bold">
                             {currentBirthday?.name.charAt(0).toUpperCase()}
                           </div>
-                        );
-                      })()
-                    ) : (
+                         );
+                       })()
+                     ) : celebrityMode && currentTimeIsValidDate && matchingBirthdays.length === 0 ? (
+                       // No celebrity for this date - show upload prompt
+                       <div className="w-full h-full bg-gradient-to-br from-primary/20 to-secondary/30 flex flex-col items-center justify-center p-2 text-center">
+                         <div className="text-2xl mb-2">📸</div>
+                         <div className="text-xs text-muted-foreground mb-2">No celebrity photo</div>
+                         <button 
+                           onClick={() => {
+                             window.open('mailto:support@bdayclock.com?subject=Celebrity Photo Upload&body=I would like to upload a photo for a celebrity. Date: ' + timeAsDate, '_blank');
+                           }}
+                           className="text-xs font-medium text-primary hover:text-primary/80 transition-colors underline"
+                         >
+                           Upload Photo
+                         </button>
+                       </div>
+                     ) : (
                       <div className="w-full h-full bg-gradient-to-br from-primary/20 to-secondary/30 flex items-center justify-center">
                         <div className="text-center text-muted-foreground/50">
                           <div className="text-2xl md:text-4xl mb-1">🎂</div>
