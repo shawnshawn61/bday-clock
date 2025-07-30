@@ -273,14 +273,18 @@ export const BirthdayClock = () => {
                       </div>
                     ) : currentTimeIsValidDate && matchingBirthdays.length > 0 ? (
                       (() => {
-                        const currentBirthday = matchingBirthdays[currentBirthdayIndex];
-                        console.log('Celebrity mode debug:', {
-                          celebrityMode,
-                          currentBirthday: currentBirthday?.name,
-                          currentBirthdayIndex,
-                          totalMatching: matchingBirthdays.length,
-                          photoFromService: celebrityMode ? getCelebrityPhoto(currentBirthday.name) : 'N/A'
-                        });
+                         const currentBirthday = matchingBirthdays[currentBirthdayIndex];
+                         console.log('=== CELEBRITY DEBUG ===');
+                         console.log('Celebrity mode debug:', {
+                           celebrityMode,
+                           timeAsDate,
+                           currentBirthday: currentBirthday?.name,
+                           currentBirthdayIndex,
+                           totalMatching: matchingBirthdays.length,
+                           allMatchingNames: matchingBirthdays.map(b => b.name),
+                           photoFromService: celebrityMode ? getCelebrityPhoto(currentBirthday?.name) : 'N/A'
+                         });
+                         console.log('=== END CELEBRITY DEBUG ===');
                         // Use celebrity photo service for celebrities, original photo for personal contacts
                         const photoUrl = celebrityMode 
                           ? getCelebrityPhoto(currentBirthday.name) || getFallbackPhoto(currentBirthday.name)
