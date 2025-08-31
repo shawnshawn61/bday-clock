@@ -35,6 +35,9 @@ export const BirthdayClock = () => {
   const { currentSlug } = usePersonalPage();
   const { birthdays } = useBirthdayStorage(currentSlug);
   
+  console.log('BirthdayClock rendering, currentSlug:', currentSlug);
+  console.log('Birthdays:', birthdays);
+  
   // Convert birthdays to Entry format
   const entries: Entry[] = birthdays.map(birthday => {
     const [month, day] = birthday.date.split('-').map(Number);
@@ -52,6 +55,8 @@ export const BirthdayClock = () => {
 function ClockHero({ entries }: { entries: Entry[] }) {
   const [now, setNow] = useState<Date>(new Date());
 
+  console.log('ClockHero rendering with entries:', entries);
+
   // tick exactly on the minute
   useEffect(() => {
     const msToNextMin = 60_000 - (Date.now() % 60_000);
@@ -64,6 +69,7 @@ function ClockHero({ entries }: { entries: Entry[] }) {
 
   const match = useMemo(() => {
     const target = mmddFromNow(now);
+    console.log('Looking for match, target:', target);
     return entries.find((e) => entryToMMDD(e) === target) ?? null;
   }, [now, entries]);
 
