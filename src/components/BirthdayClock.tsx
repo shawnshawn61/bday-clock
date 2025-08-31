@@ -78,6 +78,39 @@ export const BirthdayClock = () => {
     return () => clearInterval(timer);
   }, []);
 
+  // Polling mechanism to fetch birthday entries every 5 seconds
+  useEffect(() => {
+    const fetchBirthdayEntries = () => {
+      const now = new Date();
+      // compute mmdd target from now
+      const hour12 = (now.getHours() % 12) || 12;
+      const minute = String(now.getMinutes()).padStart(2, '0');
+      const mm = String(hour12).padStart(2, '0'); // '01'..'12'
+      const mmdd = mm + minute; // 'HH:MM' -> 'MMDD'
+      
+      if (currentSlug) {
+        fetch(`/api/owners/${currentSlug}/entries?mmdd=${mmdd}`)
+          .then(r => r.json())
+          .then(data => {
+            // Update matching birthdays with API response
+            console.log('API response for', mmdd, ':', data);
+            // This would replace the local birthday matching logic
+          })
+          .catch(err => {
+            console.log('API fetch failed, using local data:', err);
+          });
+      }
+    };
+
+    // Initial fetch
+    fetchBirthdayEntries();
+    
+    // Poll every 5 seconds
+    const pollTimer = setInterval(fetchBirthdayEntries, 5000);
+
+    return () => clearInterval(pollTimer);
+  }, [currentSlug]);
+
   // Add test time override - click on time to cycle through test times
   const [testMode, setTestMode] = useState(false);
   const [testTimeIndex, setTestTimeIndex] = useState(0);
