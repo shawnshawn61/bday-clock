@@ -89,14 +89,31 @@ export const BirthdayClock = () => {
     { hours: 12, minutes: 25, label: '12:25 PM' }
   ];
 
+  // Function to match current time with MMDD format
+  const nowMatchesMMDD = (mmdd: string, tzOffsetMinutes: number | null = null) => {
+    const now = new Date();
+    // Optional manual TZ offset for owner (in minutes)
+    const local = tzOffsetMinutes == null
+      ? now
+      : new Date(now.getTime() + tzOffsetMinutes * 60000);
+    let h = local.getHours();
+    const m = local.getMinutes();
+    // Convert to 12h clock, 12 instead of 0
+    const hour12 = (h % 12) || 12;
+    const mm = String(m).padStart(2, '0');
+    const [month, day] = [mmdd.slice(0, 2), mmdd.slice(2, 4)]; // "0214" etc.
+    return String(hour12) === String(parseInt(month, 10)) && mm === day;
+  };
+
   // Format current time as 12-hour format
   const currentTimeString = format(currentTime, 'h:mm a');
   const actualTime = format(currentTime, 'HH:mm').split(':').map(Number);
   const testTime = testTimes[testTimeIndex];
   const [hours, minutes] = testMode ? [testTime.hours, testTime.minutes] : actualTime;
   
-  // Use time-as-date for both modes, only use real calendar date for celebrity mode when explicitly showing today's celebrities
-  const timeAsDate = `${hours.toString().padStart(2, '0')}-${minutes.toString().padStart(2, '0')}`;;
+  // Use 12-hour format for matching - convert time to MMDD format
+  const hour12 = testMode ? ((testTime.hours % 12) || 12) : ((actualTime[0] % 12) || 12);
+  const timeAsDate = `${hour12.toString().padStart(2, '0')}${minutes.toString().padStart(2, '0')}`;;
   
   // Calculate valid date combinations (exclude impossible dates like 01/32, 02/30, etc.)
   const getValidDateCount = () => {
@@ -125,7 +142,7 @@ export const BirthdayClock = () => {
   // Find birthdays that match current time
   const matchingBirthdays = activeBirthdays.filter(birthday => {
     const [month, day] = birthday.date.split('-');
-    const birthdayTimeFormat = `${month}-${day}`;
+    const birthdayTimeFormat = `${month}${day}`;
     console.log(`Checking birthday ${birthday.name}: ${birthdayTimeFormat} vs ${timeAsDate}`);
     return birthdayTimeFormat === timeAsDate;
   });
