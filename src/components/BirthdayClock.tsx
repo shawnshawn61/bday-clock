@@ -1,16 +1,6 @@
-import { useState, useEffect } from 'react';
-import { format } from 'date-fns';
-import { Card } from '@/components/ui/card';
-import { Switch } from '@/components/ui/switch';
-import { Label } from '@/components/ui/label';
-import { Button } from '@/components/ui/button';
-import { BirthdayForm } from './BirthdayForm';
-import { QuickBirthdayEntry } from './QuickBirthdayEntry';
-import { BirthdayDisplay } from './BirthdayDisplay';
+import { useEffect, useMemo, useState } from "react";
 import { useBirthdayStorage } from '@/hooks/useBirthdayStorage';
 import { usePersonalPage } from '@/hooks/usePersonalPage';
-import { celebrityBirthdays } from '@/data/celebrities';
-import { getCelebrityPhoto, getFallbackPhoto } from '@/utils/celebrityPhotoService';
 
 export interface Birthday {
   id: string;
@@ -23,756 +13,102 @@ export interface Birthday {
   profession?: string; // 'actor', 'musician', 'politician', etc.
 }
 
+type Entry = {
+  name: string;
+  month: number; // 1..12
+  day: number;   // 1..31
+  photoUrl?: string;
+};
+
+function mmddFromNow(d = new Date()) {
+  const hour12 = (d.getHours() % 12) || 12;            // 1..12
+  const minute = String(d.getMinutes()).padStart(2, "0");
+  const mm = String(hour12).padStart(2, "0");          // '01'..'12'
+  return mm + minute;                                  // 'MMDD'
+}
+
+function entryToMMDD(e: Entry) {
+  return String(e.month).padStart(2, "0") + String(e.day).padStart(2, "0");
+}
+
 export const BirthdayClock = () => {
-  const [currentTime, setCurrentTime] = useState(new Date());
-  const [celebrityMode, setCelebrityMode] = useState(false);
-  const [useQuickEntry, setUseQuickEntry] = useState(false);
-  const [giftMode, setGiftMode] = useState(false);
-  const [currentBirthdayIndex, setCurrentBirthdayIndex] = useState(0);
   const { currentSlug } = usePersonalPage();
-  const { birthdays, addBirthday, removeBirthday } = useBirthdayStorage(currentSlug);
+  const { birthdays } = useBirthdayStorage(currentSlug);
+  
+  // Convert birthdays to Entry format
+  const entries: Entry[] = birthdays.map(birthday => {
+    const [month, day] = birthday.date.split('-').map(Number);
+    return {
+      name: birthday.name,
+      month,
+      day,
+      photoUrl: birthday.photo
+    };
+  });
 
-  // Gift showcase data with curated items
-  const giftShowcase = [
-    {
-      id: 1,
-      image: 'https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=400&h=600&fit=crop',
-      title: 'Artisan Books',
-      description: 'Curated literary gifts',
-      retailer: 'Barnes & Noble',
-      link: 'https://www.barnesandnoble.com/b/gifts'
-    },
-    {
-      id: 2,
-      image: 'https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=400&h=600&fit=crop',
-      title: 'Outdoor Adventure',
-      description: 'Sustainable outdoor gear',
-      retailer: 'Patagonia',
-      link: 'https://www.patagonia.com/shop/gifts'
-    },
-    {
-      id: 3,
-      image: 'https://images.unsplash.com/photo-1617038260897-41a1f14a8ca0?w=400&h=600&fit=crop',
-      title: 'Fine Jewelry',
-      description: 'Timeless elegance',
-      retailer: 'Tiffany & Co.',
-      link: 'https://www.tiffany.com/gifts/'
-    },
-    {
-      id: 4,
-      image: 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=600&fit=crop',
-      title: 'Artisan Crafts',
-      description: 'Handmade treasures',
-      retailer: 'Etsy',
-      link: 'https://www.etsy.com/c/craft-supplies-and-tools'
-    }
-  ];
+  return <ClockHero entries={entries} />;
+};
 
-  const [currentGiftIndex, setCurrentGiftIndex] = useState(0);
+function ClockHero({ entries }: { entries: Entry[] }) {
+  const [now, setNow] = useState<Date>(new Date());
 
+  // tick exactly on the minute
   useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentTime(new Date());
-    }, 1000);
-
-    return () => clearInterval(timer);
+    const msToNextMin = 60_000 - (Date.now() % 60_000);
+    let t = setTimeout(function loop() {
+      setNow(new Date());
+      t = setTimeout(loop, 60_000);
+    }, msToNextMin);
+    return () => clearTimeout(t);
   }, []);
 
-  // Polling mechanism to fetch birthday entries every 5 seconds
-  useEffect(() => {
-    const fetchBirthdayEntries = () => {
-      const now = new Date();
-      // compute mmdd target from now
-      const hour12 = (now.getHours() % 12) || 12;
-      const minute = String(now.getMinutes()).padStart(2, '0');
-      const mm = String(hour12).padStart(2, '0'); // '01'..'12'
-      const mmdd = mm + minute; // 'HH:MM' -> 'MMDD'
-      
-      if (currentSlug) {
-        fetch(`/api/owners/${currentSlug}/entries?mmdd=${mmdd}`)
-          .then(r => r.json())
-          .then(data => {
-            // Update matching birthdays with API response
-            console.log('API response for', mmdd, ':', data);
-            // This would replace the local birthday matching logic
-          })
-          .catch(err => {
-            console.log('API fetch failed, using local data:', err);
-          });
-      }
-    };
+  const match = useMemo(() => {
+    const target = mmddFromNow(now);
+    return entries.find((e) => entryToMMDD(e) === target) ?? null;
+  }, [now, entries]);
 
-    // Initial fetch
-    fetchBirthdayEntries();
-    
-    // Poll every 5 seconds
-    const pollTimer = setInterval(fetchBirthdayEntries, 5000);
-
-    return () => clearInterval(pollTimer);
-  }, [currentSlug]);
-
-  // Add test time override - click on time to cycle through test times
-  const [testMode, setTestMode] = useState(false);
-  const [testTimeIndex, setTestTimeIndex] = useState(0);
-  const testTimes = [
-    { hours: 1, minutes: 23, label: '1:23 AM' },
-    { hours: 13, minutes: 23, label: '1:23 PM' },
-    { hours: 1, minutes: 1, label: '1:01 AM' },
-    { hours: 7, minutes: 22, label: '7:22 AM' },
-    { hours: 12, minutes: 25, label: '12:25 PM' }
-  ];
-
-  // Function to match current time with MMDD format
-  const nowMatchesMMDD = (mmdd: string, tzOffsetMinutes: number | null = null) => {
-    const now = new Date();
-    // Optional manual TZ offset for owner (in minutes)
-    const local = tzOffsetMinutes == null
-      ? now
-      : new Date(now.getTime() + tzOffsetMinutes * 60000);
-    let h = local.getHours();
-    const m = local.getMinutes();
-    // Convert to 12h clock, 12 instead of 0
-    const hour12 = (h % 12) || 12;
-    const mm = String(m).padStart(2, '0');
-    const [month, day] = [mmdd.slice(0, 2), mmdd.slice(2, 4)]; // "0214" etc.
-    return String(hour12) === String(parseInt(month, 10)) && mm === day;
-  };
-
-  // Format current time as 12-hour format
-  const currentTimeString = format(currentTime, 'h:mm a');
-  const actualTime = format(currentTime, 'HH:mm').split(':').map(Number);
-  const testTime = testTimes[testTimeIndex];
-  const [hours, minutes] = testMode ? [testTime.hours, testTime.minutes] : actualTime;
-  
-  // Use 12-hour format for matching - convert time to MMDD format
-  const hour12 = testMode ? ((testTime.hours % 12) || 12) : ((actualTime[0] % 12) || 12);
-  const timeAsDate = `${hour12.toString().padStart(2, '0')}${minutes.toString().padStart(2, '0')}`;;
-  
-  // Calculate valid date combinations (exclude impossible dates like 01/32, 02/30, etc.)
-  const getValidDateCount = () => {
-    const daysInMonth = [31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]; // Including leap year Feb
-    return daysInMonth.reduce((total, days) => total + days, 0); // 366 total
-  };
-  
-  // Check if current time represents a valid date
-  const isValidDate = (month: number, day: number) => {
-    const daysInMonth = [31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
-    return month >= 1 && month <= 12 && day >= 1 && day <= daysInMonth[month - 1];
-  };
-  
-  const currentTimeIsValidDate = celebrityMode || isValidDate(hours, minutes);
-  
-  
-  // Get the appropriate birthday list based on mode
-  const activeBirthdays = celebrityMode ? celebrityBirthdays : birthdays;
-  
-  // Debug logging
-  console.log('Current user slug:', currentSlug);
-  console.log('All stored birthdays:', birthdays);
-  console.log('Current time as date:', timeAsDate);
-  console.log('Test mode:', testMode, testMode ? testTime : 'real time');
-  
-  // Find birthdays that match current time
-  const matchingBirthdays = activeBirthdays.filter(birthday => {
-    const [month, day] = birthday.date.split('-');
-    const birthdayTimeFormat = `${month}${day}`;
-    console.log(`Checking birthday ${birthday.name}: ${birthdayTimeFormat} vs ${timeAsDate}`);
-    return birthdayTimeFormat === timeAsDate;
-  });
-  
-  console.log('Matching birthdays found:', matchingBirthdays);
-
-  // Rotate gift showcase every 8 seconds when in gift mode
-  useEffect(() => {
-    if (!giftMode) return;
-    
-    const giftTimer = setInterval(() => {
-      setCurrentGiftIndex(prev => (prev + 1) % giftShowcase.length);
-    }, 8000);
-
-    return () => clearInterval(giftTimer);
-  }, [giftMode, giftShowcase.length]);
-
-  // Rotate through matching birthdays every 5 seconds when there are multiple
-  useEffect(() => {
-    if (matchingBirthdays.length <= 1) {
-      setCurrentBirthdayIndex(0);
-      return;
-    }
-    
-    const birthdayTimer = setInterval(() => {
-      setCurrentBirthdayIndex(prev => (prev + 1) % matchingBirthdays.length);
-    }, 5000);
-
-    return () => clearInterval(birthdayTimer);
-  }, [matchingBirthdays.length]);
-  
-  // Calculate countdown
-  const totalValidDates = getValidDateCount();
-  const filledDates = new Set(activeBirthdays.map(b => b.date)).size;
-  const remainingDates = totalValidDates - filledDates;
-
-  // Show gift showcase for impossible dates or when no birthdays match
-  const shouldShowGift = giftMode && (!currentTimeIsValidDate || matchingBirthdays.length === 0);
-  const currentGift = giftShowcase[currentGiftIndex];
+  const hh = ((now.getHours() % 12) || 12).toString();
+  const min = String(now.getMinutes()).padStart(2, "0");
+  const ampm = now.getHours() >= 12 ? "PM" : "AM";
 
   return (
-    <div className="min-h-screen bg-gradient-clock p-4 md:p-8">
-      <div className="max-w-6xl mx-auto space-y-8">
-        {/* Header */}
-        <div className="text-center space-y-4">
-          <div className="flex items-center justify-center mb-4">
-            <img 
-              src="/lovable-uploads/8903630c-9f11-485e-9baf-37ae1a7bde4f.png" 
-              alt="Bday Clock Logo" 
-              className="h-16 w-auto object-contain"
-            />
-          </div>
-          <p className="text-muted-foreground text-lg">
-            Time to remember bdays
-          </p>
-        </div>
-
-
-        {/* Digital Clock */}
-        <Card className="p-6 md:p-8 bg-card/80 backdrop-blur-sm border-photo-frame">
-          {/* Clock and Photo Unit - Centered */}
-          <div className="flex flex-col items-center justify-center space-y-6">
-            {/* Time and Photo Row */}
-            <div className="flex items-center justify-center gap-6 md:gap-8">
-              {/* Large Time Display */}
-              <div className="text-center">
-                <div className="flex items-baseline gap-2">
-                  <button
-                    onClick={() => {
-                      if (testMode) {
-                        setTestTimeIndex((prev) => (prev + 1) % testTimes.length);
-                      } else {
-                        setTestMode(true);
-                      }
-                    }}
-                    onDoubleClick={() => setTestMode(false)}
-                    className="text-5xl md:text-7xl font-mono font-bold text-celebration animate-clock-pulse leading-none hover:opacity-80 transition-opacity cursor-pointer"
-                    title={testMode ? `Test Mode: ${testTime.label} (click to cycle, double-click to exit)` : "Click to enter test mode"}
-                  >
-                    {testMode ? `${testTime.hours > 12 ? testTime.hours - 12 : testTime.hours === 0 ? 12 : testTime.hours}:${testTime.minutes.toString().padStart(2, '0')}` : format(currentTime, 'h:mm')}
-                  </button>
-                  <span className="text-lg md:text-xl font-mono text-muted-foreground self-end mb-1 md:mb-2">
-                    {testMode ? (testTime.hours >= 12 ? 'PM' : 'AM') : format(currentTime, 'a')}
-                  </span>
-                </div>
-                {testMode && (
-                  <div className="text-xs text-muted-foreground mt-1">
-                    Test Mode: {testTime.label} (double-click time to exit)
-                  </div>
-                )}
-              </div>
-              
-              {/* Portrait Photo(s) - Multiple frames in personal mode, single in celebrity mode */}
-              <div className="flex-shrink-0 relative">
-                {!celebrityMode && currentTimeIsValidDate && matchingBirthdays.length > 1 ? (
-                  // Multiple friend frames for personal mode
-                  <div className="flex gap-2 md:gap-3">
-                    {matchingBirthdays.map((birthday, index) => (
-                      <div key={birthday.id} className="relative">
-                        <div className="w-20 md:w-28 aspect-[3/4] rounded-xl overflow-hidden border-4 border-photo-frame shadow-lg">
-                          {birthday?.photo ? (
-                            <img
-                              src={birthday.photo}
-                              alt={birthday.name}
-                              className="w-full h-full object-cover"
-                              onError={(e) => {
-                                // Show initials as fallback
-                                const target = e.target as HTMLImageElement;
-                                target.style.display = 'none';
-                                const parent = target.parentElement;
-                                if (parent && !parent.querySelector('.fallback-initials')) {
-                                  const fallbackDiv = document.createElement('div');
-                                  fallbackDiv.className = 'fallback-initials w-full h-full bg-gradient-to-br from-celebration to-celebration/70 flex items-center justify-center text-2xl md:text-4xl text-white font-bold';
-                                  fallbackDiv.textContent = birthday.name.charAt(0).toUpperCase();
-                                  parent.appendChild(fallbackDiv);
-                                }
-                              }}
-                            />
-                          ) : (
-                            <div className="w-full h-full bg-gradient-to-br from-celebration to-celebration/70 flex items-center justify-center text-2xl md:text-4xl text-white font-bold">
-                              {birthday?.name.charAt(0).toUpperCase()}
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  // Single frame for celebrity mode or single friend
-                  <div className="w-24 md:w-36 aspect-[3/4] rounded-xl overflow-hidden border-4 border-photo-frame shadow-lg">
-                    {shouldShowGift ? (
-                      <div className="w-full h-full relative group">
-                        <img
-                          src={currentGift.image}
-                          alt={currentGift.title}
-                          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                        <div className="absolute bottom-2 left-2 right-2 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                          <div className="text-xs font-medium truncate">{currentGift.title}</div>
-                          <div className="text-xs opacity-80 truncate">{currentGift.description}</div>
-                        </div>
-                      </div>
-                    ) : currentTimeIsValidDate && matchingBirthdays.length > 0 ? (
-                      (() => {
-                         const currentBirthday = matchingBirthdays[currentBirthdayIndex];
-                         console.log('=== CELEBRITY DEBUG ===');
-                         console.log('Celebrity mode debug:', {
-                           celebrityMode,
-                           timeAsDate,
-                           currentBirthday: currentBirthday?.name,
-                           currentBirthdayIndex,
-                           totalMatching: matchingBirthdays.length,
-                           allMatchingNames: matchingBirthdays.map(b => b.name),
-                           photoFromService: celebrityMode ? getCelebrityPhoto(currentBirthday?.name) : 'N/A'
-                         });
-                         console.log('=== END CELEBRITY DEBUG ===');
-                        // Use celebrity photo service for celebrities, original photo for personal contacts
-                        const photoUrl = celebrityMode 
-                          ? getCelebrityPhoto(currentBirthday.name) || getFallbackPhoto(currentBirthday.name)
-                          : currentBirthday?.photo;
-                        
-                         return photoUrl ? (
-                           <img
-                             src={photoUrl}
-                             alt={currentBirthday.name}
-                             className="w-full h-full object-cover"
-                             onError={(e) => {
-                              // Fallback to a different image if the original fails to load
-                              const target = e.target as HTMLImageElement;
-                              if (celebrityMode && !target.src.includes('unsplash')) {
-                                target.src = getFallbackPhoto(currentBirthday.name);
-                              } else {
-                                // Show initials as ultimate fallback
-                                target.style.display = 'none';
-                                const parent = target.parentElement;
-                                if (parent && !parent.querySelector('.fallback-initials')) {
-                                  const fallbackDiv = document.createElement('div');
-                                  fallbackDiv.className = 'fallback-initials w-full h-full bg-gradient-to-br from-celebration to-celebration/70 flex items-center justify-center text-3xl md:text-5xl text-white font-bold';
-                                  fallbackDiv.textContent = currentBirthday.name.charAt(0).toUpperCase();
-                                  parent.appendChild(fallbackDiv);
-                                }
-                              }
-                            }}
-                          />
-                        ) : (
-                          <div className="w-full h-full bg-gradient-to-br from-celebration to-celebration/70 flex items-center justify-center text-3xl md:text-5xl text-white font-bold">
-                            {currentBirthday?.name.charAt(0).toUpperCase()}
-                          </div>
-                         );
-                       })()
-                     ) : celebrityMode && currentTimeIsValidDate && matchingBirthdays.length === 0 ? (
-                       // No celebrity for this date - show upload prompt
-                       <div className="w-full h-full bg-gradient-to-br from-primary/20 to-secondary/30 flex flex-col items-center justify-center p-2 text-center">
-                         <div className="text-2xl mb-2">📸</div>
-                         <div className="text-xs text-muted-foreground mb-2">No celebrity photo</div>
-                         <button 
-                           onClick={() => {
-                             window.open('mailto:support@bdayclock.com?subject=Celebrity Photo Upload&body=I would like to upload a photo for a celebrity. Date: ' + timeAsDate, '_blank');
-                           }}
-                           className="text-xs font-medium text-primary hover:text-primary/80 transition-colors underline"
-                         >
-                           Upload Photo
-                         </button>
-                       </div>
-                     ) : (
-                      <div className="w-full h-full bg-gradient-to-br from-primary/20 to-secondary/30 flex items-center justify-center">
-                        <div className="text-center text-muted-foreground/50">
-                          <div className="text-2xl md:text-4xl mb-1">🎂</div>
-                          <button 
-                            onClick={() => {
-                              const formSection = document.querySelector('[data-form-section]');
-                              formSection?.scrollIntoView({ behavior: 'smooth' });
-                              setTimeout(() => {
-                                const nameInput = document.querySelector('input[placeholder*="name"], input[name="name"]') as HTMLInputElement;
-                                nameInput?.focus();
-                              }, 300);
-                            }}
-                            className="text-xs font-medium text-primary hover:text-primary/80 transition-colors underline"
-                          >
-                            Add Friend
-                          </button>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                )}
-                
-                {/* Countdown counter */}
-                <div className="absolute -bottom-2 -right-2 text-xs text-muted-foreground/60 font-mono">
-                  {remainingDates}
-                </div>
-              </div>
-            </div>
-
-            {/* Celebrity O'clock Message - Full Width */}
-            {currentTimeIsValidDate && matchingBirthdays.length > 0 && !shouldShowGift && (
-              <div className="w-full text-center">
-                <div className="text-lg md:text-xl font-playfair font-medium text-foreground px-4">
-                  It's{' '}
-                  {celebrityMode && matchingBirthdays[currentBirthdayIndex]?.imdb ? (
-                    <a 
-                      href={matchingBirthdays[currentBirthdayIndex].wikipedia || matchingBirthdays[currentBirthdayIndex].imdb} 
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-celebration hover:text-celebration/80 transition-colors underline decoration-2 underline-offset-4"
-                      onClick={() => {
-                        const currentCelebrity = matchingBirthdays[currentBirthdayIndex];
-                        console.log('Link clicked:', {
-                          celebrity: currentCelebrity.name,
-                          linkType: currentCelebrity.wikipedia ? 'Wikipedia' : 'IMDb',
-                          url: currentCelebrity.wikipedia || currentCelebrity.imdb,
-                          profession: currentCelebrity.profession,
-                          index: currentBirthdayIndex
-                        });
-                      }}
-                     >
-                       {(() => {
-                         console.log('DISPLAYING NAME:', matchingBirthdays[currentBirthdayIndex]?.name);
-                         console.log('MATCHING BIRTHDAYS:', matchingBirthdays.map(b => ({ name: b.name, date: b.date })));
-                         return matchingBirthdays[currentBirthdayIndex]?.name || 'NO NAME FOUND';
-                       })()}
-                     </a>
-                  ) : !celebrityMode ? (
-                    <a 
-                      href={`sms:?body=Hiya, you popped up on Bday Clock at ${currentTimeString} and I just wanted to say hi.`}
-                      className="text-celebration hover:text-celebration/80 transition-colors underline decoration-2 underline-offset-4"
-                    >
-                      {matchingBirthdays[currentBirthdayIndex]?.name}
-                    </a>
-                  ) : (
-                    <span className="text-celebration">{matchingBirthdays[currentBirthdayIndex]?.name}</span>
-                  )}
-                  {' '}O'clock! 🥳⏰
-                </div>
-              </div>
-            )}
-
-            {/* Gift showcase info */}
-            {shouldShowGift && (
-              <div className="text-center">
-                <div className="text-lg font-semibold text-foreground mb-1">
-                  {currentGift.title}
-                </div>
-                <a 
-                  href={currentGift.link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-block text-sm text-primary hover:text-primary/80 transition-colors underline decoration-dotted underline-offset-2"
-                >
-                  Shop at {currentGift.retailer}
-                </a>
-              </div>
-            )}
+    <div className="min-h-screen bg-gradient-to-br from-zinc-900 via-zinc-800 to-zinc-900 flex items-center justify-center p-4">
+      <div className="rounded-xl border border-zinc-700 bg-zinc-900/40 p-6 backdrop-blur-sm">
+        <div className="flex items-center justify-between gap-6">
+          {/* Clock */}
+          <div className="text-6xl font-bold tracking-tight">
+            <span className="inline-block rounded-xl border border-yellow-400/60 px-4 py-2 shadow">
+              {hh}:{min}
+            </span>
+            <span className="ml-2 text-zinc-400 text-2xl align-top">{ampm}</span>
           </div>
 
-        </Card>
-
-
-        {/* Additional Birthday Celebration Display - Show all birthdays with slideshow indicator - Personal Mode Only */}
-        {!celebrityMode && currentTimeIsValidDate && matchingBirthdays.length > 0 && (
-          <>
-            <BirthdayDisplay birthdays={matchingBirthdays} />
-            {matchingBirthdays.length > 1 && (
-              <div className="flex justify-center items-center gap-2">
-                <span className="text-sm text-muted-foreground">
-                  {currentBirthdayIndex + 1} of {matchingBirthdays.length}
-                </span>
-                <div className="flex gap-1">
-                  {matchingBirthdays.map((_, index) => (
-                    <div
-                      key={index}
-                      className={`w-2 h-2 rounded-full transition-colors ${
-                        index === currentBirthdayIndex ? 'bg-celebration' : 'bg-muted-foreground/30'
-                      }`}
-                    />
-                  ))}
-                </div>
-              </div>
-            )}
-          </>
-        )}
-
-        {/* Gift Shop Sections */}
-        {celebrityMode ? (
-          /* eLux Shop for Celebrity Mode */
-          <Card className="p-6 bg-card/80 backdrop-blur-sm border-photo-frame">
-            <div className="text-center space-y-6">
-              <div>
-                <h2 className="text-2xl font-bold text-foreground mb-2">Bday Clock eLux Shop</h2>
-                <p className="text-muted-foreground italic">Last minute gifts.</p>
-              </div>
-              
-              <div className="grid grid-cols-2 gap-6">
-                <div className="text-center space-y-3">
-                  <div className="text-4xl">💎</div>
-                  <div>
-                    <h3 className="font-semibold text-foreground">Jewelry</h3>
-                    <p className="text-sm text-muted-foreground">Fine Jewelry</p>
-                  </div>
-                </div>
-                
-                <div className="text-center space-y-3">
-                  <div className="text-4xl">🏝️</div>
-                  <div>
-                    <h3 className="font-semibold text-foreground">Excursions</h3>
-                    <p className="text-sm text-muted-foreground">Travel Experiences</p>
-                  </div>
-                </div>
-                
-                <div className="text-center space-y-3">
-                  <div className="text-4xl">🏨</div>
-                  <div>
-                    <h3 className="font-semibold text-foreground">Luxury Hotels</h3>
-                    <p className="text-sm text-muted-foreground">Premium Stays</p>
-                  </div>
-                </div>
-                
-                <div className="text-center space-y-3">
-                  <div className="text-4xl">👜</div>
-                  <div>
-                    <h3 className="font-semibold text-foreground">Luxury Goods</h3>
-                    <p className="text-sm text-muted-foreground">Designer Items</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </Card>
-        ) : (
-          /* eGift Shop for Personal Mode */
-          <Card className="p-6 bg-card/80 backdrop-blur-sm border-photo-frame">
-            <div className="text-center space-y-6">
-              <div>
-                <h2 className="text-2xl font-bold text-foreground mb-2">Bday Clock eGift Shop</h2>
-                <p className="text-muted-foreground italic">Last minute gifts.</p>
-              </div>
-              
-              <div className="grid grid-cols-2 gap-6">
-                <a 
-                  href="https://www.giftcards.com/us/en/catalog/product-details/spa-finder-gift-card" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="text-center space-y-3 p-4 rounded-lg hover:bg-secondary/50 transition-colors"
-                >
-                  <div className="text-4xl">🧘</div>
-                  <div>
-                    <h3 className="font-semibold text-foreground">Wellness</h3>
-                    <p className="text-sm text-muted-foreground">Gift Cards</p>
-                  </div>
-                </a>
-                
-                <a 
-                  href="https://www.giftcards.com/us/en/catalog/product-listing/gift-card-ideas/clothing-gift-cards" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="text-center space-y-3 p-4 rounded-lg hover:bg-secondary/50 transition-colors"
-                >
-                  <div className="text-4xl">👕</div>
-                  <div>
-                    <h3 className="font-semibold text-foreground">Clothing</h3>
-                    <p className="text-sm text-muted-foreground">Gift Cards</p>
-                  </div>
-                </a>
-                
-                <a 
-                  href="https://www.giftcards.com/us/en/catalog/product-listing/gift-card-ideas/restaurant-gift-cards" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="text-center space-y-3 p-4 rounded-lg hover:bg-secondary/50 transition-colors"
-                >
-                  <div className="text-4xl">🚚</div>
-                  <div>
-                    <h3 className="font-semibold text-foreground">Food Delivery</h3>
-                    <p className="text-sm text-muted-foreground">Gift Cards</p>
-                  </div>
-                </a>
-                
-                <a 
-                  href="https://www.giftcards.com/us/en/catalog/product-listing/gift-card-ideas/gaming" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="text-center space-y-3 p-4 rounded-lg hover:bg-secondary/50 transition-colors"
-                >
-                  <div className="text-4xl">🎮</div>
-                  <div>
-                    <h3 className="font-semibold text-foreground">Gaming</h3>
-                    <p className="text-sm text-muted-foreground">Gift Cards</p>
-                  </div>
-                </a>
-              </div>
-            </div>
-          </Card>
-        )}
-
-
-        {/* Birthday Form - Only show in personal mode */}
-        {!celebrityMode && (
-          <div className="space-y-4" data-form-section>
-            {/* Entry Mode Toggle and Auto Fill */}
-            <div className="flex flex-col items-center gap-4">
-              <div className="flex items-center gap-2 p-1 bg-secondary/50 rounded-lg">
-                <button
-                  onClick={() => setUseQuickEntry(true)}
-                  className={`px-3 py-2 rounded-md text-sm font-medium transition-all ${
-                    useQuickEntry 
-                      ? 'bg-primary text-primary-foreground shadow-sm' 
-                      : 'text-muted-foreground hover:text-foreground'
-                  }`}
-                >
-                  ⚡ Quick Entry
-                </button>
-                <button
-                  onClick={() => setUseQuickEntry(false)}
-                  className={`px-3 py-2 rounded-md text-sm font-medium transition-all ${
-                    !useQuickEntry 
-                      ? 'bg-primary text-primary-foreground shadow-sm' 
-                      : 'text-muted-foreground hover:text-foreground'
-                  }`}
-                >
-                  📝 Detailed Form
-                </button>
-              </div>
-              
-              {/* Auto Fill Section */}
-              {currentSlug && (
-                <div className="flex flex-col items-center gap-2">
-                  <Button
-                    onClick={async () => {
-                      const message = `Hey, Add your name, birthday and photo to my BdayClock. When the time matches your birthday, your face will pop up on my clock. It takes less than two minutes at www.bdayclock.com/${currentSlug}`;
-                      
-                      try {
-                        await navigator.clipboard.writeText(message);
-                        
-                        // Always show the message since SMS opening is unreliable
-                        alert(`✅ Message copied to clipboard!\n\nPaste this in your messaging app:\n\n"${message}"\n\nOr manually open your SMS app and paste the message.`);
-                        
-                        // Still try to open SMS as a convenience, but don't rely on it
-                        const encodedMessage = encodeURIComponent(message);
-                        const smsUrl = `sms:?&body=${encodedMessage}`;
-                        setTimeout(() => {
-                          try {
-                            window.open(smsUrl, '_blank');
-                          } catch (e) {
-                            // Silent fail if SMS doesn't work
-                          }
-                        }, 100);
-                        
-                      } catch (err) {
-                        // Fallback if clipboard API fails
-                        alert(`Copy this message to send to friends:\n\n"${message}"`);
-                      }
-                    }}
-                    variant="outline"
-                    className="px-4 py-2"
-                  >
-                    📱 Auto Fill
-                  </Button>
-                  <p className="text-xs text-muted-foreground text-center max-w-xs">
-                    Get friends to add themselves to your BdayClock
-                  </p>
-                </div>
-              )}
-            </div>
-            
-            {/* Show appropriate form */}
-            {useQuickEntry ? (
-              <QuickBirthdayEntry onAddBirthday={addBirthday} />
-            ) : (
-              <BirthdayForm onAddBirthday={addBirthday} />
-            )}
-          </div>
-        )}
-
-
-        {/* Instructions */}
-        <Card className="p-6 bg-card/60 backdrop-blur-sm border-photo-frame">
-          <h3 className="text-lg font-semibold mb-3 text-foreground">
-            How it works:
-          </h3>
-            <div className="space-y-2 text-muted-foreground">
-              <p>• Every birthday maps to a time. (Feb 2 = 2:02, etc.)</p>
-              <p>•  When the clock hits their day, their photo pops up.</p>
-              <p>•  Twice a day. Every day.</p>
-              <p>•  Add friends, family—even celebs.</p>
-              <p>Fill the clock with faces you love.</p>
-              <p>•  Bonus: You'll know every birthday by heart. In no time.</p>
-          </div>
-        </Card>
-
-        {/* Mode Toggles */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {/* Celebrity Mode Toggle */}
-          <Card className="p-6 bg-card/80 backdrop-blur-sm border-photo-frame">
-            <div className="flex items-center justify-center gap-4">
-              <Label htmlFor="celebrity-mode" className="text-lg font-medium text-foreground">
-                {celebrityMode ? '⭐ Celebrity Mode' : '👥 Personal Mode'}
-              </Label>
-              <Switch
-                id="celebrity-mode"
-                checked={celebrityMode}
-                onCheckedChange={setCelebrityMode}
-                className="data-[state=checked]:bg-celebration"
+          {/* Right card: either the birthday photo or Add Friend */}
+          {match ? (
+            <div className="w-[130px] h-[170px] rounded-2xl overflow-hidden ring-2 ring-white/60 shadow-lg">
+              <img
+                src={match.photoUrl || "/placeholder.jpg"}
+                alt={match.name}
+                className="w-full h-full object-cover"
               />
             </div>
-            <p className="text-center text-sm text-muted-foreground mt-2">
-              {celebrityMode 
-                ? 'Showing famous celebrities when time matches their birth dates'
-                : 'Showing your personal contacts and their birthdays'
-              }
-            </p>
-          </Card>
-
-          {/* Gift Showcase Toggle */}
-          <Card className="p-6 bg-card/80 backdrop-blur-sm border-photo-frame">
-            <div className="flex items-center justify-center gap-4">
-              <Label htmlFor="gift-mode" className="text-lg font-medium text-foreground">
-                {giftMode ? '🎁 Gift Gallery' : '🖼️ Gallery Off'}
-              </Label>
-              <Switch
-                id="gift-mode"
-                checked={giftMode}
-                onCheckedChange={setGiftMode}
-                className="data-[state=checked]:bg-primary"
-              />
+          ) : (
+            <div className="flex w-[130px] h-[170px] flex-col items-center justify-center rounded-2xl border-2 border-dashed border-zinc-600 bg-zinc-800/50 text-zinc-400 transition-colors hover:border-zinc-500 hover:bg-zinc-800/70">
+              <svg className="h-8 w-8 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+              </svg>
+              <span className="text-sm font-medium">Add Friend</span>
             </div>
-            <p className="text-center text-sm text-muted-foreground mt-2">
-              {giftMode 
-                ? 'Showcasing curated gifts from premium retailers'
-                : 'Turn on to see beautiful gift inspiration'
-              }
-            </p>
-          </Card>
+          )}
         </div>
-
-        {/* Retailer Partnership Info */}
-        {giftMode && (
-          <Card className="p-6 bg-card/60 backdrop-blur-sm border-photo-frame">
-            <h3 className="text-lg font-semibold mb-3 text-foreground text-center">
-              🏪 Retailers: Purchase Time Slots
-            </h3>
-            <div className="text-center space-y-3">
-              <p className="text-muted-foreground">
-                Transform impossible dates into gift inspiration moments. Partner with us to showcase your curated collections.
-              </p>
-              <div className="flex flex-wrap justify-center gap-2 text-sm">
-                <span className="px-3 py-1 bg-secondary/50 rounded-full">Barnes & Noble</span>
-                <span className="px-3 py-1 bg-secondary/50 rounded-full">Patagonia</span>
-                <span className="px-3 py-1 bg-secondary/50 rounded-full">Tiffany & Co.</span>
-                <span className="px-3 py-1 bg-secondary/50 rounded-full">Etsy</span>
-              </div>
-              <button className="mt-4 px-6 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors font-medium">
-                Retailer Partnership Inquiry
-              </button>
-            </div>
-          </Card>
+        {match && (
+          <div className="mt-4 text-center">
+            <p className="text-lg text-white">
+              It's <span className="text-yellow-400 font-semibold">{match.name}</span> O'clock! 🎉
+            </p>
+          </div>
         )}
       </div>
     </div>
   );
-};
+}
