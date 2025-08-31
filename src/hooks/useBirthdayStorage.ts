@@ -16,7 +16,7 @@ export const useBirthdayStorage = (userSlug?: string) => {
     } catch (error) {
       console.error('Error loading birthdays from storage:', error);
     }
-  }, []);
+  }, [STORAGE_KEY]);
 
   // Save birthdays to localStorage whenever birthdays change
   useEffect(() => {
@@ -25,7 +25,7 @@ export const useBirthdayStorage = (userSlug?: string) => {
     } catch (error) {
       console.error('Error saving birthdays to storage:', error);
     }
-  }, [birthdays]);
+  }, [birthdays, STORAGE_KEY]);
 
   const addBirthday = (newBirthday: Omit<Birthday, 'id'>) => {
     const birthday: Birthday = {
